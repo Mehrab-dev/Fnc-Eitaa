@@ -1,0 +1,12 @@
+{
+  "observed_at": "2026-10-15",
+  "endpoint": "https://hasan.eitaa.ir/eitaa/",
+  "rpc": "updates.getState",
+  "purpose": "Read-only unauthenticated framing probe; empty token, synthetic device ID",
+  "request_hex": "ed77be7a00000000143030303030303030303030303030315f5f776562000000042a88d4ed0000008700000080000000",
+  "http_status": 200,
+  "content_type": "application/octet-stream",
+  "response_bytes": 24,
+  "response_prefix_hex": "bbf9b9c4910100000d494e56414c49445f4c4f47494e0000",
+  "interpretation": "Not yet decoded; this probe does not establish authenticated account support"
+}

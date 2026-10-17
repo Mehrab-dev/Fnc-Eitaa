@@ -1,0 +1,106 @@
+{
+  "observed_at": "2026-10-15",
+  "offset_unit": "Unicode code points",
+  "sources": [
+    {
+      "file": "mtproto.worker-Zk-UnVZ2.js",
+      "source": "https://web.eitaa.com/mtproto.worker-Zk-UnVZ2.js",
+      "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+      "bytes": 1101156,
+      "anchors": [
+        {
+          "name": "main_domain_application",
+          "offset": 16934,
+          "selector": "re.isMainDomain&&(re.id=2496"
+        },
+        {
+          "name": "device_identifier",
+          "offset": 976745,
+          "selector": "async function gf("
+        },
+        {
+          "name": "legacy_password_hash",
+          "offset": 63954,
+          "selector": "async function ks("
+        },
+        {
+          "name": "login_password_state",
+          "offset": 65579,
+          "selector": "getLoginState(){"
+        },
+        {
+          "name": "password_branch",
+          "offset": 67441,
+          "selector": "check(e,t,s={},a){"
+        },
+        {
+          "name": "send_code_pong",
+          "offset": 972300,
+          "selector": "c===\"auth.sendCode\""
+        },
+        {
+          "name": "token_refresh",
+          "offset": 948576,
+          "selector": "e.storeMethod(\"eitaaRefreshToken\""
+        },
+        {
+          "name": "http_response_request_id",
+          "offset": 955484,
+          "selector": "this.parseResponse(a,t.msg_id)"
+        },
+        {
+          "name": "direct_http_response_parser",
+          "offset": 964248,
+          "selector": "const b=new Vt(e,{mtproto:!0});let D;"
+        },
+        {
+          "name": "direct_http_single_object",
+          "offset": 964289,
+          "selector": "D=b.fetchObject(\"\",\"INPUT\")"
+        }
+      ]
+    },
+    {
+      "file": "pagePassword-DnS-jVDj.js",
+      "source": "https://web.eitaa.com/pagePassword-DnS-jVDj.js",
+      "sha256": "bd664e47321d98746ad5e998b5d06e2b75481e892b9166c84f85c53be175e0f7",
+      "bytes": 3194,
+      "anchors": [
+        {
+          "name": "fetch_password_state",
+          "offset": 1954,
+          "selector": "passwordManager.getLoginState()"
+        },
+        {
+          "name": "submit_password",
+          "offset": 2276,
+          "selector": "passwordManager.check("
+        }
+      ]
+    },
+    {
+      "file": "crypto.worker-BvnnVP9w.js",
+      "source": "https://web.eitaa.com/crypto.worker-BvnnVP9w.js",
+      "sha256": "c4bd9ad27612c3459d895933072a236d229b4715ebb4a13523e8c8751f976339",
+      "bytes": 70662,
+      "anchors": [
+        {
+          "name": "srp_kdf",
+          "offset": 60173,
+          "selector": "async function Or("
+        },
+        {
+          "name": "srp_proof",
+          "offset": 60439,
+          "selector": "async function Lr("
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "Public static source only; no JavaScript executed and no account credentials accessed.",
+    "auth.checkPassword2 source supplies flags=2 while including phone_code (bit 0) and phone_number (bit 1). SDK computes flags=3 from both present fields.",
+    "SRP uses local CSPRNG entropy instead of relying solely on server secure_random.",
+    "A sendCode pong is only an ACK; synthetic hash uses the local HTTP request id as in the web source."
+  ]
+}

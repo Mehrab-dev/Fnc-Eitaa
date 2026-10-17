@@ -1,0 +1,42 @@
+{
+  "observed_at": "2026-10-15",
+  "storage": "original HTTP response bytes; decoded as UTF-8 for analysis",
+  "assets": [
+    {
+      "file": "index-CC1NVsQA.js",
+      "source": "https://web.eitaa.com/index-CC1NVsQA.js",
+      "sha256": "28e1602013608e4cf0b9026de59799a0005319bed367bddf1ce9eaaa61403153",
+      "bytes": 555410
+    },
+    {
+      "file": "mtproto.worker-Zk-UnVZ2.js",
+      "source": "https://web.eitaa.com/mtproto.worker-Zk-UnVZ2.js",
+      "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+      "bytes": 1101156
+    },
+    {
+      "file": "pageSignIn-CQHR3TjJ.js",
+      "source": "https://web.eitaa.com/pageSignIn-CQHR3TjJ.js",
+      "sha256": "4b92215d0a3be103994a6f97c46ab54b4309a8ba09adfb2a8301e87013ac88f4",
+      "bytes": 4144
+    },
+    {
+      "file": "pageAuthCode-I3xASqyX.js",
+      "source": "https://web.eitaa.com/pageAuthCode-I3xASqyX.js",
+      "sha256": "a0c017cc6b5233774aac4b069cde77c0b5a5529814da1f37cbfc2ee95caf32ab",
+      "bytes": 5110
+    },
+    {
+      "file": "pagePassword-DnS-jVDj.js",
+      "source": "https://web.eitaa.com/pagePassword-DnS-jVDj.js",
+      "sha256": "bd664e47321d98746ad5e998b5d06e2b75481e892b9166c84f85c53be175e0f7",
+      "bytes": 3194
+    },
+    {
+      "file": "crypto.worker-BvnnVP9w.js",
+      "source": "https://web.eitaa.com/crypto.worker-BvnnVP9w.js",
+      "sha256": "c4bd9ad27612c3459d895933072a236d229b4715ebb4a13523e8c8751f976339",
+      "bytes": 70662
+    }
+  ]
+}

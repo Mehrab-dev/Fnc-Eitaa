@@ -1,0 +1,83 @@
+{
+  "observed_at": "2026-10-15",
+  "status": "Default User-Agent rejection reproduced; SDK header fixed; real login/reconnect still pending",
+  "user_report": {
+    "stage": "auth.sendCode",
+    "rpc_error": {
+      "code": 401,
+      "type": "INVALID_LOGIN"
+    },
+    "web_login_on_same_device": "User reports working",
+    "credentials_recorded": false
+  },
+  "developer_probes": {
+    "real_phone_otp_or_account_credentials_used": false,
+    "device_id": "000000000000001__web",
+    "normal_response": {
+      "http_status": 200,
+      "content_type": "application/octet-stream",
+      "response_hex": "bbf9b9c4910100000d494e56414c49445f4c4f47494e0000",
+      "decoded": {
+        "_": "error",
+        "code": 401,
+        "text": "INVALID_LOGIN"
+      }
+    },
+    "cases_returning_invalid_login": [
+      "help.getConfig on hasan with SDK Content-Type",
+      "help.getConfig on hasan with web Origin/Referer",
+      "help.getConfig on hosna with web Origin/Referer",
+      "eitaaRefreshToken with empty token and public web app identity",
+      "auth.sendCode with EMPTY phone, current envelope",
+      "auth.sendCode with EMPTY phone, legacy layer 133 envelope without final flags",
+      "auth.sendCode with EMPTY phone, invokeWithLayer/initConnection",
+      "auth.sendCode with EMPTY phone, single-message container"
+    ],
+    "raw_unwrapped_methods": {
+      "methods": [
+        "help.getConfig",
+        "auth.sendCode with EMPTY phone"
+      ],
+      "decoded": {
+        "_": "error",
+        "code": 404,
+        "text": "INVALID_CONSTRUCTOR"
+      }
+    }
+  },
+  "browser_read_only_observation": {
+    "public_entry": "index-CC1NVsQA.js",
+    "matches_researched_entry_name": true,
+    "cookies_storage_tokens_or_passwords_inspected": false,
+    "login_form_submitted": false,
+    "actual_web_auth_packet_compared": false
+  },
+  "conclusion": "Changing only User-Agent for the same empty-phone auth.sendCode packet changes INVALID_LOGIN to PHONE_NUMBER_INVALID. The patched SDK transport reproduced phone validation. This does not prove successful OTP delivery, login, or reconnect with a real account.",
+  "header_comparison": {
+    "endpoint": "https://hasan.eitaa.ir/eitaa/",
+    "same_request_hex": "ed77be7a00000000143030303030303030303030303030315f5f776562000000384f2477a600000000c009000020386461383562306435626665363235323765356232343463323039313539633300000083bebede000000000000008700000080000000",
+    "phone_number": "",
+    "real_account_credentials_used": false,
+    "baseline": {
+      "User-Agent": "python-requests/2.34.2",
+      "http_status": 200,
+      "response_hex": "bbf9b9c4910100000d494e56414c49445f4c4f47494e0000",
+      "rpc_error": {
+        "code": 401,
+        "type": "INVALID_LOGIN"
+      }
+    },
+    "patched_transport": {
+      "User-Agent": "Fnc-Eitaa/0.1.0",
+      "rpc_error": {
+        "code": 400,
+        "type": "PHONE_NUMBER_INVALID"
+      }
+    },
+    "other_control_cases": {
+      "Mozilla/5.0 Fnc-Eitaa/0.1.0": "400 PHONE_NUMBER_INVALID",
+      "python-requests with Sec-Fetch-Mode cors": "401 INVALID_LOGIN"
+    },
+    "only_change_required_in_sdk": "Explicit User-Agent; no Origin/Referer/Sec-Fetch headers, token bootstrap or retries added"
+  }
+}

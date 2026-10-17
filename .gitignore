@@ -179,3 +179,13 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# Public upstream bundles used for protocol research
+research/*.js
+# Account credentials and durable queue databases
+*.session
+*.session.*
+*.session-journal
+*.session-wal
+*.session-shm
+.fnceitaa/

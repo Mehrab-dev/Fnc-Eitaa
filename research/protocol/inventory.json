@@ -1,0 +1,937 @@
+{
+  "metadata": {
+    "source": "https://web.eitaa.com/mtproto.worker-Zk-UnVZ2.js",
+    "source_sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "source_bytes": 1101156,
+    "evidence": "static public bundle; no authenticated wire capture"
+  },
+  "layer": 135,
+  "counts": {
+    "MTProto": {
+      "constructors": 52,
+      "methods": 12
+    },
+    "API": {
+      "constructors": 990,
+      "methods": 443
+    }
+  },
+  "server_pools": {
+    "dcClients": [
+      "https://hasan.eitaa.ir/eitaa/",
+      "https://hosna.eitaa.com/eitaa/",
+      "https://armita.eitaa.com/eitaa/",
+      "https://majid.eitaa.com/eitaa/",
+      "https://alireza.eitaa.com/eitaa/",
+      "https://mostafa.eitaa.com/eitaa/",
+      "https://sajad.eitaa.ir/eitaa/",
+      "https://bagher.eitaa.ir/eitaa/",
+      "https://sadegh.eitaa.ir/eitaa/",
+      "https://kazem.eitaa.ir/eitaa/"
+    ],
+    "dcDownloads": [
+      "https://mohsen.eitaa.com/eitaa/",
+      "https://ghasem.eitaa.com/eitaa/",
+      "https://hadi.eitaa.com/eitaa/",
+      "https://hossein.eitaa.com/eitaa/",
+      "https://vahid.eitaa.com/eitaa/"
+    ],
+    "dcUploads": [
+      "https://alzheimer.eitaa.com/eitaa/",
+      "https://fateme.eitaa.com/eitaa/",
+      "https://ali.eitaa.com/eitaa/",
+      "https://meysam.eitaa.com/eitaa/"
+    ]
+  },
+  "schema_anomalies": [
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "name": "adsDialogAd",
+      "issue": "missing predicate; preserved as supplied"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "name": "adsEmptyAd",
+      "issue": "missing predicate; preserved as supplied"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "chatPhoto",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        -770990276,
+        1632839530
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "photoCachedSize",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        35527382,
+        -374917894
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "photoSize",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        1976012384,
+        2009052699
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "adsInputAdsLocationRecommend",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        -1829372741,
+        -1829372741
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "adsInputAdsLocationChatMembers",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        -338836925,
+        -338836925
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "adsInputAdsLocationContacts",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        -415214013,
+        -415214013
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "adsInputAdsLocationTrends",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        1557811792,
+        1557811792
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "adsInputAdsLocationDialog",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        314488883,
+        314488883
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "name": "statAd",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        -1626620176,
+        -1626620176
+      ]
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "name": "adsGetAdsPack",
+      "issue": "duplicate name; preserved in source order",
+      "ids": [
+        950734118,
+        950734118
+      ]
+    }
+  ],
+  "not_sent_by_web_client": [
+    "messages.receivedMessages",
+    "account.registerDevice",
+    "messages.getAllStickers",
+    "messages.getEmojiStickers",
+    "messages.getFeaturedStickers",
+    "messages.getRecentStickers",
+    "messages.searchStickerSets",
+    "messages.getStickers",
+    "messages.getStickerSet",
+    "messages.installStickerSet",
+    "messages.uninstallStickerSet",
+    "messages.reorderStickerSets",
+    "messages.clearRecentStickers",
+    "messages.saveRecentSticker",
+    "messages.faveSticker",
+    "auth.exportAuthorization",
+    "auth.exportLoginToken",
+    "http_wait",
+    "account.getNotifySettings",
+    "messages.getScheduledHistory",
+    "messages.getEmojiKeywordsDifference",
+    "messages.getInlineBotResults",
+    "messages.saveDraft",
+    "messages.markDialogUnread",
+    "account.getContentSettings",
+    "langpack.getDifference",
+    "account.getThemes",
+    "messages.getSavedGifs",
+    "messages.saveGif",
+    "messages.getFavedStickers",
+    "messages.getAllDrafts",
+    "help.getAppConfig",
+    "help.getNearestDc",
+    "langpack.getStrings",
+    "help.getPromoData",
+    "contacts.getTopPeers",
+    "payments.getStarsStatus",
+    "messages.getSavedReactionTags",
+    "messages.getRecentReactions",
+    "messages.getDefaultTagReactions",
+    "messages.getMessagesReactions",
+    "messages.getMessageReactionsList",
+    "messages.sendReaction",
+    "messages.sendPaidReaction",
+    "messages.setDefaultReaction",
+    "messages.updateSavedReactionTag",
+    "messages.togglePaidReactionPrivacy",
+    "help.getPeerColors",
+    "help.getPeerProfileColors",
+    "messages.getAvailableEffects",
+    "messages.getAvailableReactions",
+    "messages.getAttachMenuBots",
+    "messages.getSponsoredMessages",
+    "messages.getPaidReactionPrivacy",
+    "channels.getChannelRecommendations",
+    "stories.getAllStories",
+    "stories.getPeerStories",
+    "stories.getStoriesByID",
+    "stories.getPinnedStories",
+    "stories.getStoriesArchive",
+    "stories.getAlbums",
+    "stories.getAlbumStories",
+    "stories.deleteStories",
+    "stories.togglePinned",
+    "stories.togglePinnedToTop",
+    "stories.readStories",
+    "stories.incrementStoryViews",
+    "stories.getStoryViewsList",
+    "stories.getStoriesViews",
+    "stories.report",
+    "stories.sendReaction",
+    "stories.togglePeerStoriesHidden",
+    "stories.sendStory",
+    "stories.editStory",
+    "help.getTimezonesList",
+    "payments.getPremiumGiftCodeOptions",
+    "messages.getTopReactions",
+    "help.getPromoData"
+  ],
+  "selected_entries": [
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": -212046591,
+      "predicate": "rpc_result",
+      "params": [
+        {
+          "name": "req_msg_id",
+          "type": "long"
+        },
+        {
+          "name": "result",
+          "type": "Object"
+        }
+      ],
+      "type": "RpcResult"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": 558156313,
+      "predicate": "rpc_error",
+      "params": [
+        {
+          "name": "error_code",
+          "type": "int"
+        },
+        {
+          "name": "error_message",
+          "type": "string"
+        }
+      ],
+      "type": "RpcError"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": 880243653,
+      "predicate": "pong",
+      "params": [
+        {
+          "name": "msg_id",
+          "type": "long"
+        },
+        {
+          "name": "ping_id",
+          "type": "long"
+        }
+      ],
+      "type": "Pong"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": 1945237724,
+      "predicate": "msg_container",
+      "params": [
+        {
+          "name": "messages",
+          "type": "vector<%Message>"
+        }
+      ],
+      "type": "MessageContainer"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": 812830625,
+      "predicate": "gzip_packed",
+      "params": [
+        {
+          "name": "packed_data",
+          "type": "bytes"
+        }
+      ],
+      "type": "Object"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": -601545863,
+      "predicate": "eitaa_updates_expire_token",
+      "params": [],
+      "type": "EitaaUpdatesExpireToken"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": -1519642063,
+      "predicate": "eitaa_updates_token",
+      "params": [
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "expire",
+          "type": "int"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        }
+      ],
+      "type": "EitaaUpdatesToken"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": -601545867,
+      "predicate": "eitaa_token_updating",
+      "params": [],
+      "type": "EitaaTokenUpdating"
+    },
+    {
+      "namespace": "MTProto",
+      "collection": "constructors",
+      "id": 1635347945,
+      "predicate": "eitaaAppInfo",
+      "params": [
+        {
+          "name": "build_version",
+          "type": "int"
+        },
+        {
+          "name": "device_model",
+          "type": "string"
+        },
+        {
+          "name": "system_version",
+          "type": "string"
+        },
+        {
+          "name": "app_version",
+          "type": "string"
+        },
+        {
+          "name": "lang_code",
+          "type": "string"
+        },
+        {
+          "name": "sign",
+          "type": "string"
+        }
+      ],
+      "type": "EitaaAppInfo"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": -994444869,
+      "predicate": "error",
+      "params": [
+        {
+          "name": "code",
+          "type": "int"
+        },
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "type": "Error"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": -404,
+      "predicate": "eitta_error",
+      "params": [
+        {
+          "name": "code",
+          "type": "int"
+        },
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "type": "Error"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": -138301121,
+      "predicate": "inputUserSelf",
+      "params": [],
+      "type": "InputUser"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": 1577067778,
+      "predicate": "auth.sentCode",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "type",
+          "type": "auth.SentCodeType"
+        },
+        {
+          "name": "phone_code_hash",
+          "type": "string"
+        },
+        {
+          "name": "next_type",
+          "type": "flags.1?auth.CodeType"
+        },
+        {
+          "name": "timeout",
+          "type": "flags.2?int"
+        }
+      ],
+      "type": "auth.SentCode"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": -855308010,
+      "predicate": "auth.authorization",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "user",
+          "type": "User"
+        }
+      ],
+      "type": "auth.Authorization"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": -557924733,
+      "predicate": "codeSettings",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "allow_flashcall",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "current_number",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "allow_app_hash",
+          "type": "flags.4?true"
+        }
+      ],
+      "type": "CodeSettings"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": 2059302893,
+      "predicate": "eitaaObject",
+      "params": [
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "imei",
+          "type": "string"
+        },
+        {
+          "name": "packed_data",
+          "type": "bytes"
+        },
+        {
+          "name": "layer",
+          "type": "int"
+        },
+        {
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "type": "EitaaObject"
+    },
+    {
+      "namespace": "API",
+      "collection": "constructors",
+      "id": 1635347945,
+      "predicate": "eitaaAppInfo",
+      "params": [
+        {
+          "name": "build_version",
+          "type": "int"
+        },
+        {
+          "name": "device_model",
+          "type": "string"
+        },
+        {
+          "name": "system_version",
+          "type": "string"
+        },
+        {
+          "name": "app_version",
+          "type": "string"
+        },
+        {
+          "name": "lang_code",
+          "type": "string"
+        },
+        {
+          "name": "sign",
+          "type": "string"
+        }
+      ],
+      "type": "EitaaAppInfo"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -1043505495,
+      "method": "initConnection",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "api_id",
+          "type": "int"
+        },
+        {
+          "name": "device_model",
+          "type": "string"
+        },
+        {
+          "name": "system_version",
+          "type": "string"
+        },
+        {
+          "name": "app_version",
+          "type": "string"
+        },
+        {
+          "name": "system_lang_code",
+          "type": "string"
+        },
+        {
+          "name": "lang_pack",
+          "type": "string"
+        },
+        {
+          "name": "lang_code",
+          "type": "string"
+        },
+        {
+          "name": "proxy",
+          "type": "flags.0?InputClientProxy"
+        },
+        {
+          "name": "params",
+          "type": "flags.1?JSONValue"
+        },
+        {
+          "name": "query",
+          "type": "!X"
+        }
+      ],
+      "type": "X"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -627372787,
+      "method": "invokeWithLayer",
+      "params": [
+        {
+          "name": "layer",
+          "type": "int"
+        },
+        {
+          "name": "query",
+          "type": "!X"
+        }
+      ],
+      "type": "X"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -1502141361,
+      "method": "auth.sendCode",
+      "params": [
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "api_id",
+          "type": "int"
+        },
+        {
+          "name": "api_hash",
+          "type": "string"
+        },
+        {
+          "name": "settings",
+          "type": "CodeSettings"
+        }
+      ],
+      "type": "auth.SentCode"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -1126886015,
+      "method": "auth.signIn",
+      "params": [
+        {
+          "name": "phone_number",
+          "type": "string"
+        },
+        {
+          "name": "phone_code_hash",
+          "type": "string"
+        },
+        {
+          "name": "phone_code",
+          "type": "string"
+        }
+      ],
+      "type": "auth.Authorization"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -779399914,
+      "method": "auth.checkPassword",
+      "params": [
+        {
+          "name": "password",
+          "type": "InputCheckPasswordSRP"
+        }
+      ],
+      "type": "auth.Authorization"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -1987323361,
+      "method": "auth.checkPassword2",
+      "params": [
+        {
+          "name": "password_hash",
+          "type": "bytes"
+        },
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "phone_code",
+          "type": "flags.0?string"
+        },
+        {
+          "name": "phone_number",
+          "type": "flags.1?string"
+        }
+      ],
+      "type": "auth.Authorization"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 1418342645,
+      "method": "account.getPassword",
+      "params": [],
+      "type": "account.Password"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 227648840,
+      "method": "users.getUsers",
+      "params": [
+        {
+          "name": "id",
+          "type": "Vector<InputUser>"
+        }
+      ],
+      "type": "Vector<User>"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -113456221,
+      "method": "contacts.resolveUsername",
+      "params": [
+        {
+          "name": "username",
+          "type": "string"
+        }
+      ],
+      "type": "contacts.ResolvedPeer"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 1143203525,
+      "method": "messages.getHistory",
+      "params": [
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "offset_id",
+          "type": "int"
+        },
+        {
+          "name": "offset_date",
+          "type": "int"
+        },
+        {
+          "name": "add_offset",
+          "type": "int"
+        },
+        {
+          "name": "limit",
+          "type": "int"
+        },
+        {
+          "name": "max_id",
+          "type": "int"
+        },
+        {
+          "name": "min_id",
+          "type": "int"
+        },
+        {
+          "name": "hash",
+          "type": "long"
+        }
+      ],
+      "type": "messages.Messages"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 1376532592,
+      "method": "messages.sendMessage",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "no_webpage",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "silent",
+          "type": "flags.5?true"
+        },
+        {
+          "name": "background",
+          "type": "flags.6?true"
+        },
+        {
+          "name": "clear_draft",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "reply_to_msg_id",
+          "type": "flags.0?int"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "random_id",
+          "type": "long"
+        },
+        {
+          "name": "reply_markup",
+          "type": "flags.2?ReplyMarkup"
+        },
+        {
+          "name": "entities",
+          "type": "flags.3?Vector<MessageEntity>"
+        },
+        {
+          "name": "schedule_date",
+          "type": "flags.10?int"
+        },
+        {
+          "name": "noforwards",
+          "type": "flags.14?true"
+        }
+      ],
+      "type": "Updates"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -304838614,
+      "method": "updates.getState",
+      "params": [],
+      "type": "updates.State"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 630429265,
+      "method": "updates.getDifference",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "pts",
+          "type": "int"
+        },
+        {
+          "name": "pts_total_limit",
+          "type": "flags.0?int"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        },
+        {
+          "name": "qts",
+          "type": "int"
+        }
+      ],
+      "type": "updates.Difference"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": 2059302893,
+      "method": "eitaaObject",
+      "params": [
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "imei",
+          "type": "string"
+        },
+        {
+          "name": "packed_data",
+          "type": "bytes"
+        },
+        {
+          "name": "layer",
+          "type": "int"
+        },
+        {
+          "name": "flags",
+          "type": "int"
+        }
+      ],
+      "type": "EitaaObject"
+    },
+    {
+      "namespace": "API",
+      "collection": "methods",
+      "id": -599448727,
+      "method": "eitaaRefreshToken",
+      "params": [
+        {
+          "name": "app_info",
+          "type": "EitaaAppInfo"
+        }
+      ],
+      "type": "EitaaRefreshToken"
+    }
+  ]
+}
