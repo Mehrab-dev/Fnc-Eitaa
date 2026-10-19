@@ -1,0 +1,92 @@
+{
+  "observed_at": "2026-10-17",
+  "implementation": [
+    "fnceitaa/queue_store.py",
+    "fnceitaa/account_queue.py",
+    "examples/account_queue.py"
+  ],
+  "design": {
+    "sqlite_schema_version": 1,
+    "journal_mode": "WAL",
+    "synchronous": "FULL",
+    "owner_binding": [
+      "account_id",
+      "endpoint",
+      "api_id",
+      "device_id_sha256"
+    ],
+    "credentials_persisted": false,
+    "message_content_and_peer_access_hashes_persisted": true,
+    "encrypted": false,
+    "inbox_and_checkpoint_atomic": true,
+    "checkpoint_revision_cas": true,
+    "persistent_event_id_dedup": true,
+    "stable_outbox_random_ids": true,
+    "idempotent_enqueue_keys": true,
+    "automatic_uncertain_retry": false,
+    "automatic_failed_retry": false,
+    "expired_outbox_claim": "uncertain",
+    "expired_inbox_claim": "pending",
+    "handler_delivery": "at least once",
+    "insertion_order_independent_of_clock": true
+  },
+  "queued_operations": [
+    "send_message",
+    "edit_message",
+    "delete_messages",
+    "forward_messages",
+    "copy_message",
+    "send_file",
+    "send_album"
+  ],
+  "local_acceptance": {
+    "tests": "tests/test_account_queue.py",
+    "queue_tests_executed": 48,
+    "queue_tests_passed": 47,
+    "queue_tests_skipped": 1,
+    "skip_reason": "Windows account cannot create symbolic links",
+    "full_suite_tests_executed": 331,
+    "full_suite_tests_passed": 330,
+    "full_suite_tests_skipped": 1,
+    "binary_tl_http_queue_send_and_inbox": true,
+    "real_child_process_exit_tests": 3,
+    "process_exit_boundaries": [
+      "before enqueue commit",
+      "after persisted outbox claim",
+      "after inbox insert before checkpoint commit"
+    ],
+    "lost_local_receipt_after_server_ack": true,
+    "concurrent_claim_and_stale_ack": true,
+    "file_change_before_dispatch": true,
+    "cli_preview_and_confirmation": true
+  },
+  "agent_live_queue_sends_performed": false,
+  "agent_live_queue_inbox_capture_performed": false,
+  "otp_requested": false,
+  "pending_acceptance": [
+    "manual crash/recovery observation on the user machine",
+    "live network interruption recovery"
+  ],
+  "not_claimed": [
+    "exactly-once remote effects",
+    "automatic uncertain resend",
+    "durable partial-media resume",
+    "hardware power-loss testing",
+    "automatic retention",
+    "multi-device session portability"
+  ],
+  "reference_documentation": [
+    "https://www.sqlite.org/atomiccommit.html",
+    "https://docs.python.org/3/library/sqlite3.html"
+  ],
+  "user_live_acceptance": {
+    "observed_at": "2026-10-17",
+    "enqueue_and_reopen_persistence": true,
+    "one_dispatch_and_independent_message_readback": true,
+    "confirmed_job_refused_second_dispatch_attempts_unchanged": true,
+    "new_message_inbox_capture": true,
+    "inbox_pending_survives_reopen": true,
+    "explicit_ack_done_survives_reopen_attempts_one": true,
+    "private_ids_and_message_bodies_recorded": false
+  }
+}

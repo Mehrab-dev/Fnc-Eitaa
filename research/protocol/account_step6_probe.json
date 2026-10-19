@@ -1,0 +1,42 @@
+{
+  "observed_at": "2026-10-17",
+  "source": {
+    "file": "mtproto.worker-Zk-UnVZ2.js",
+    "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "offset_unit": "Unicode code points",
+    "get_difference_offset": 159980,
+    "get_channel_difference_offset": 161944,
+    "channel_difference_rpc_offset": 162245,
+    "get_state_offset": 169940
+  },
+  "live_read_only": {
+    "session_source": "Existing SDK session; credentials omitted",
+    "get_state": "updates.state",
+    "get_difference": "updates.difference",
+    "public_channel": "eitaa",
+    "channel_difference_succeeded": true,
+    "events_observed": 0,
+    "checkpoint_save_and_reload": true
+  },
+  "live_event_mutations_performed": false,
+  "otp_requested": false,
+  "user_reported_acceptance": {
+    "new_edit_delete_in_self_chat": true,
+    "automatic_restart_catch_up": false,
+    "offline_test_message_present_in_history": true,
+    "offline_message_delivered_with_explicit_overlap": true,
+    "second_restart_confirms_ack_and_dedup": false
+  },
+  "restart_investigation": {
+    "saved_cursor_response": "updates.differenceEmpty",
+    "test_message_in_saved_dedup": false,
+    "one_pts_earlier_same_date_recovers_test_message": true,
+    "same_pts_earlier_date_recovers_test_message": false,
+    "sdk_overlap_batch_contains_test_message": true,
+    "overlap_batch_acknowledged": false,
+    "default_checkpoint_unchanged": true,
+    "server_internal_cause_known": false
+  },
+  "pending_acceptance": ["automatic restart catch-up", "second restart verifying acknowledgement and dedup"],
+  "notes": ["No private identifiers, message contents, credentials or cursor values recorded.", "Temporary probe checkpoint is ignored and separate from the default user checkpoint."]
+}

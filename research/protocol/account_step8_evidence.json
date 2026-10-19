@@ -1,0 +1,589 @@
+{
+  "observed_at": "2026-10-17",
+  "source": {
+    "file": "mtproto.worker-Zk-UnVZ2.js",
+    "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "offset_unit": "Unicode code points",
+    "marker_occurrences": {
+      "upload.saveFilePart": [
+        451990,
+        911251,
+        912335
+      ],
+      "upload.saveBigFilePart": [
+        452678,
+        911226
+      ],
+      "upload.getFile": [
+        452245,
+        452513,
+        453596,
+        904215
+      ],
+      "messages.sendMedia": [
+        425984,
+        660703,
+        668187,
+        672271,
+        676955,
+        922885
+      ],
+      "messages.uploadMedia": [
+        440436,
+        670407,
+        673583
+      ],
+      "messages.sendMultiMedia": [
+        441547,
+        672292,
+        922906
+      ],
+      "inputDocumentFileLocation": [
+        196376,
+        231308,
+        896906,
+        897656
+      ],
+      "inputPhotoFileLocation": [
+        231754,
+        896934,
+        897560
+      ],
+      "10485760": [
+        910801
+      ],
+      "https://alzheimer.eitaa.com/eitaa/": [
+        21341
+      ],
+      "https://mohsen.eitaa.com/eitaa/": [
+        21148
+      ]
+    }
+  },
+  "layer": 135,
+  "methods": {
+    "upload.saveFilePart": {
+      "id": -1291540959,
+      "method": "upload.saveFilePart",
+      "params": [
+        {
+          "name": "file_id",
+          "type": "long"
+        },
+        {
+          "name": "file_part",
+          "type": "int"
+        },
+        {
+          "name": "bytes",
+          "type": "bytes"
+        },
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "peer",
+          "type": "flags.0?Peer"
+        },
+        {
+          "name": "totalFileSize",
+          "type": "flags.1?long"
+        }
+      ],
+      "type": "Bool"
+    },
+    "upload.saveBigFilePart": {
+      "id": -562337987,
+      "method": "upload.saveBigFilePart",
+      "params": [
+        {
+          "name": "file_id",
+          "type": "long"
+        },
+        {
+          "name": "file_part",
+          "type": "int"
+        },
+        {
+          "name": "file_total_parts",
+          "type": "int"
+        },
+        {
+          "name": "bytes",
+          "type": "bytes"
+        },
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "peer",
+          "type": "flags.0?Peer"
+        },
+        {
+          "name": "totalFileSize",
+          "type": "flags.1?long"
+        }
+      ],
+      "type": "Bool"
+    },
+    "upload.getFile": {
+      "id": -1319462148,
+      "method": "upload.getFile",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "precise",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "cdn_supported",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "location",
+          "type": "InputFileLocation"
+        },
+        {
+          "name": "offset",
+          "type": "int"
+        },
+        {
+          "name": "limit",
+          "type": "int"
+        }
+      ],
+      "type": "upload.File"
+    },
+    "messages.sendMedia": {
+      "id": 881978281,
+      "method": "messages.sendMedia",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "silent",
+          "type": "flags.5?true"
+        },
+        {
+          "name": "background",
+          "type": "flags.6?true"
+        },
+        {
+          "name": "clear_draft",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "reply_to_msg_id",
+          "type": "flags.0?int"
+        },
+        {
+          "name": "media",
+          "type": "InputMedia"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "random_id",
+          "type": "long"
+        },
+        {
+          "name": "reply_markup",
+          "type": "flags.2?ReplyMarkup"
+        },
+        {
+          "name": "entities",
+          "type": "flags.3?Vector<MessageEntity>"
+        },
+        {
+          "name": "schedule_date",
+          "type": "flags.10?int"
+        },
+        {
+          "name": "noforwards",
+          "type": "flags.14?true"
+        }
+      ],
+      "type": "Updates"
+    },
+    "messages.uploadMedia": {
+      "id": 1369162417,
+      "method": "messages.uploadMedia",
+      "params": [
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "media",
+          "type": "InputMedia"
+        }
+      ],
+      "type": "MessageMedia"
+    },
+    "messages.sendMultiMedia": {
+      "id": -872345397,
+      "method": "messages.sendMultiMedia",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "silent",
+          "type": "flags.5?true"
+        },
+        {
+          "name": "background",
+          "type": "flags.6?true"
+        },
+        {
+          "name": "clear_draft",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "reply_to_msg_id",
+          "type": "flags.0?int"
+        },
+        {
+          "name": "multi_media",
+          "type": "Vector<InputSingleMedia>"
+        },
+        {
+          "name": "schedule_date",
+          "type": "flags.10?int"
+        },
+        {
+          "name": "noforwards",
+          "type": "flags.14?true"
+        }
+      ],
+      "type": "Updates"
+    }
+  },
+  "constructors": {
+    "inputFile": {
+      "id": -181407105,
+      "predicate": "inputFile",
+      "params": [
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "parts",
+          "type": "int"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "md5_checksum",
+          "type": "string"
+        }
+      ],
+      "type": "InputFile"
+    },
+    "inputFileBig": {
+      "id": -95482955,
+      "predicate": "inputFileBig",
+      "params": [
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "parts",
+          "type": "int"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "type": "InputFile"
+    },
+    "inputMediaUploadedPhoto": {
+      "id": 505969924,
+      "predicate": "inputMediaUploadedPhoto",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "file",
+          "type": "InputFile"
+        },
+        {
+          "name": "stickers",
+          "type": "flags.0?Vector<InputDocument>"
+        },
+        {
+          "name": "ttl_seconds",
+          "type": "flags.1?int"
+        }
+      ],
+      "type": "InputMedia"
+    },
+    "inputMediaUploadedDocument": {
+      "id": 1530447553,
+      "predicate": "inputMediaUploadedDocument",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "nosound_video",
+          "type": "flags.3?true"
+        },
+        {
+          "name": "force_file",
+          "type": "flags.4?true"
+        },
+        {
+          "name": "file",
+          "type": "InputFile"
+        },
+        {
+          "name": "thumb",
+          "type": "flags.2?InputFile"
+        },
+        {
+          "name": "mime_type",
+          "type": "string"
+        },
+        {
+          "name": "attributes",
+          "type": "Vector<DocumentAttribute>"
+        },
+        {
+          "name": "stickers",
+          "type": "flags.0?Vector<InputDocument>"
+        },
+        {
+          "name": "ttl_seconds",
+          "type": "flags.1?int"
+        }
+      ],
+      "type": "InputMedia"
+    },
+    "inputSingleMedia": {
+      "id": 482797855,
+      "predicate": "inputSingleMedia",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "media",
+          "type": "InputMedia"
+        },
+        {
+          "name": "random_id",
+          "type": "long"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "entities",
+          "type": "flags.0?Vector<MessageEntity>"
+        }
+      ],
+      "type": "InputSingleMedia"
+    },
+    "inputDocumentFileLocation": {
+      "id": -1160743548,
+      "predicate": "inputDocumentFileLocation",
+      "params": [
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "access_hash",
+          "type": "long"
+        },
+        {
+          "name": "file_reference",
+          "type": "bytes"
+        },
+        {
+          "name": "thumb_size",
+          "type": "string"
+        }
+      ],
+      "type": "InputFileLocation"
+    },
+    "inputPhotoFileLocation": {
+      "id": 1075322878,
+      "predicate": "inputPhotoFileLocation",
+      "params": [
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "access_hash",
+          "type": "long"
+        },
+        {
+          "name": "file_reference",
+          "type": "bytes"
+        },
+        {
+          "name": "thumb_size",
+          "type": "string"
+        }
+      ],
+      "type": "InputFileLocation"
+    },
+    "documentAttributeAudio": {
+      "id": -1739392570,
+      "predicate": "documentAttributeAudio",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "voice",
+          "type": "flags.10?true"
+        },
+        {
+          "name": "duration",
+          "type": "int"
+        },
+        {
+          "name": "title",
+          "type": "flags.0?string"
+        },
+        {
+          "name": "performer",
+          "type": "flags.1?string"
+        },
+        {
+          "name": "waveform",
+          "type": "flags.2?bytes"
+        }
+      ],
+      "type": "DocumentAttribute"
+    },
+    "documentAttributeVideo": {
+      "id": 250621158,
+      "predicate": "documentAttributeVideo",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "round_message",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "supports_streaming",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "duration",
+          "type": "int"
+        },
+        {
+          "name": "w",
+          "type": "int"
+        },
+        {
+          "name": "h",
+          "type": "int"
+        }
+      ],
+      "type": "DocumentAttribute"
+    },
+    "documentAttributeFilename": {
+      "id": 358154344,
+      "predicate": "documentAttributeFilename",
+      "params": [
+        {
+          "name": "file_name",
+          "type": "string"
+        }
+      ],
+      "type": "DocumentAttribute"
+    }
+  },
+  "role_endpoints": {
+    "upload": "https://alzheimer.eitaa.com/eitaa/",
+    "download": "https://mohsen.eitaa.com/eitaa/",
+    "client": "session endpoint"
+  },
+  "upload_behavior": {
+    "part_size": 524288,
+    "max_parts": 4000,
+    "big_at_or_above": 10485760,
+    "first_part_custom_fields": [
+      "peer",
+      "totalFileSize"
+    ],
+    "big_quota_announcement": "upload.saveFilePart with separate random file ID, one zero byte, peer and totalFileSize"
+  },
+  "local_acceptance": {
+    "test_file": "tests/test_account_media.py",
+    "media_tests_passed": 38,
+    "full_suite_tests_passed": 247,
+    "mock_binary_tl_http": true,
+    "boundary_and_cancellation_tests": true,
+    "atomic_download_and_hash": true,
+    "no_automatic_upload_send_retry": true
+  },
+  "agent_live_uploads_or_sends_performed": false,
+  "agent_live_media_downloads_performed": false,
+  "otp_requested": false,
+  "pending_acceptance": [
+    "video/document album types",
+    "big-file boundary and server quota behavior",
+    "other permitted destinations"
+  ],
+  "unsupported": [
+    "durable partial-transfer resume",
+    "automatic transcoding and thumbnail generation",
+    "CDN redirects and DC migration"
+  ],
+  "user_live_acceptance": {
+    "self_document_send_read_download_hash_match": true,
+    "self_photo_send": true,
+    "self_photo_read_download_and_rendering": true,
+    "self_voice_send_read_download_hash_match_and_playback": true,
+    "self_video_send_read_download_hash_match_and_playback": true,
+    "self_two_photo_album_grouped_ids_caption_and_display": true
+  },
+  "agent_read_only_photo_metadata": {
+    "empty_cached_preview_observed": true,
+    "cached_preview_bytes_type": "bytes",
+    "cached_preview_length": 0,
+    "other_nonempty_photo_sizes_present": true,
+    "readback_after_fix_succeeded": true,
+    "no_private_identifiers_or_content_recorded": true
+  }
+}

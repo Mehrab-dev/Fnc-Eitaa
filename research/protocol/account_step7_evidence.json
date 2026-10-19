@@ -1,0 +1,171 @@
+{
+  "observed_at": "2026-10-17",
+  "source": {
+    "file": "mtproto.worker-Zk-UnVZ2.js",
+    "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "offset_unit": "Unicode code points",
+    "call_offsets": {
+      "edit_rpc": 657705,
+      "delete_channel_rpc": 737911,
+      "delete_common_rpc": 738165,
+      "forward_rpc": 698744
+    }
+  },
+  "layer": 135,
+  "methods": {
+    "messages.editMessage": {
+      "id": 1224152952,
+      "method": "messages.editMessage",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "no_webpage",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "id",
+          "type": "int"
+        },
+        {
+          "name": "message",
+          "type": "flags.11?string"
+        },
+        {
+          "name": "media",
+          "type": "flags.14?InputMedia"
+        },
+        {
+          "name": "reply_markup",
+          "type": "flags.2?ReplyMarkup"
+        },
+        {
+          "name": "entities",
+          "type": "flags.3?Vector<MessageEntity>"
+        },
+        {
+          "name": "schedule_date",
+          "type": "flags.15?int"
+        }
+      ],
+      "type": "Updates"
+    },
+    "messages.deleteMessages": {
+      "id": -443640366,
+      "method": "messages.deleteMessages",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "revoke",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "id",
+          "type": "Vector<int>"
+        }
+      ],
+      "type": "messages.AffectedMessages"
+    },
+    "channels.deleteMessages": {
+      "id": -2067661490,
+      "method": "channels.deleteMessages",
+      "params": [
+        {
+          "name": "channel",
+          "type": "InputChannel"
+        },
+        {
+          "name": "id",
+          "type": "Vector<int>"
+        }
+      ],
+      "type": "messages.AffectedMessages"
+    },
+    "messages.forwardMessages": {
+      "id": -637606386,
+      "method": "messages.forwardMessages",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "silent",
+          "type": "flags.5?true"
+        },
+        {
+          "name": "background",
+          "type": "flags.6?true"
+        },
+        {
+          "name": "with_my_score",
+          "type": "flags.8?true"
+        },
+        {
+          "name": "drop_author",
+          "type": "flags.11?true"
+        },
+        {
+          "name": "drop_media_captions",
+          "type": "flags.12?true"
+        },
+        {
+          "name": "from_peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "id",
+          "type": "Vector<int>"
+        },
+        {
+          "name": "random_id",
+          "type": "Vector<long>"
+        },
+        {
+          "name": "to_peer",
+          "type": "InputPeer"
+        },
+        {
+          "name": "schedule_date",
+          "type": "flags.10?int"
+        },
+        {
+          "name": "noforwards",
+          "type": "flags.14?true"
+        }
+      ],
+      "type": "Updates"
+    }
+  },
+  "copy_strategy": "messages.forwardMessages with drop_author=true; no download/reupload fallback",
+  "local_acceptance": {
+    "tests": "tests/test_account_operations.py",
+    "pinned_tl_and_mock_http": true,
+    "source_peer_verification": true,
+    "explicit_cli_confirmation": true,
+    "partial_or_unmatched_ack_is_uncertain": true,
+    "no_automatic_write_retry": true
+  },
+  "agent_live_mutations_performed": false,
+  "otp_requested": false,
+  "pending_acceptance": [
+    "live copy without author visual verification",
+    "other permitted destinations and media types"
+  ],
+  "user_live_acceptance": {
+    "self_edit_and_readback": true,
+    "self_forward_and_readback": true,
+    "self_copy_and_readback": true,
+    "self_local_delete_and_readback": true,
+    "copy_author_visual_verified": false
+  }
+}

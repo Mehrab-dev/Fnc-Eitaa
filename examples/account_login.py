@@ -18,18 +18,18 @@ def secret(prompt):
 
 
 def read_phone():
-    print('Use + and country code. Iran example: 0912xxxxxxx -> +98912xxxxxxx.')
+    print('Enter your Iranian mobile number (09...) or an international number (+country code).')
     while True:
-        phone = secret('International phone number (+98...; hidden): ')
+        phone = secret('Phone number (09... or +country code; hidden): ')
         try:
             return normalize_phone(phone)
         except ValueError:
-            print('Invalid phone format. For Iran use +98 followed by the number without its leading 0.')
-            print('The + is required. Enter the full number again, or press Ctrl+C to cancel.')
+            print('Invalid phone format. Use 11 digits starting with 09, or + and country code.')
+            print('Enter the full number again, or press Ctrl+C to cancel.')
 
 
 async def login(session_path):
-    async with AccountClient(session_path) as client:
+    async with AccountClient(session_path, auto_login=False) as client:
         if client.is_authorized:
             user = await client.get_me()
             print(f"Session reconnected. Account ID: {user['id']}")

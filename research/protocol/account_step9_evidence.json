@@ -1,0 +1,772 @@
+{
+  "observed_at": "2026-10-17",
+  "source": {
+    "file": "mtproto.worker-Zk-UnVZ2.js",
+    "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "offset_unit": "Unicode code points",
+    "worker_method_literal_offsets": {
+      "users.getFullUser": [
+        814331,
+        934864
+      ],
+      "messages.getFullChat": [
+        817106
+      ],
+      "channels.getFullChannel": [
+        821402
+      ],
+      "channels.getParticipants": [
+        819793,
+        823655
+      ],
+      "channels.getParticipant": [
+        820861
+      ]
+    }
+  },
+  "layer": 135,
+  "methods": {
+    "users.getFullUser": {
+      "id": -902781519,
+      "method": "users.getFullUser",
+      "params": [
+        {
+          "name": "id",
+          "type": "InputUser"
+        }
+      ],
+      "type": "UserFull"
+    },
+    "messages.getFullChat": {
+      "id": -1364194508,
+      "method": "messages.getFullChat",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": "long"
+        }
+      ],
+      "type": "messages.ChatFull"
+    },
+    "channels.getFullChannel": {
+      "id": 141781513,
+      "method": "channels.getFullChannel",
+      "params": [
+        {
+          "name": "channel",
+          "type": "InputChannel"
+        }
+      ],
+      "type": "messages.ChatFull"
+    },
+    "channels.getParticipants": {
+      "id": 2010044880,
+      "method": "channels.getParticipants",
+      "params": [
+        {
+          "name": "channel",
+          "type": "InputChannel"
+        },
+        {
+          "name": "filter",
+          "type": "ChannelParticipantsFilter"
+        },
+        {
+          "name": "offset",
+          "type": "int"
+        },
+        {
+          "name": "limit",
+          "type": "int"
+        },
+        {
+          "name": "hash",
+          "type": "long"
+        }
+      ],
+      "type": "channels.ChannelParticipants"
+    },
+    "channels.getParticipant": {
+      "id": -1599378234,
+      "method": "channels.getParticipant",
+      "params": [
+        {
+          "name": "channel",
+          "type": "InputChannel"
+        },
+        {
+          "name": "participant",
+          "type": "InputPeer"
+        }
+      ],
+      "type": "channels.ChannelParticipant"
+    }
+  },
+  "constructors": {
+    "userFull": {
+      "id": -694681851,
+      "predicate": "userFull",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "blocked",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "phone_calls_available",
+          "type": "flags.4?true"
+        },
+        {
+          "name": "phone_calls_private",
+          "type": "flags.5?true"
+        },
+        {
+          "name": "can_pin_message",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "has_scheduled",
+          "type": "flags.12?true"
+        },
+        {
+          "name": "video_calls_available",
+          "type": "flags.13?true"
+        },
+        {
+          "name": "user",
+          "type": "User"
+        },
+        {
+          "name": "about",
+          "type": "flags.1?string"
+        },
+        {
+          "name": "settings",
+          "type": "PeerSettings"
+        },
+        {
+          "name": "profile_photo",
+          "type": "flags.2?Photo"
+        },
+        {
+          "name": "notify_settings",
+          "type": "PeerNotifySettings"
+        },
+        {
+          "name": "bot_info",
+          "type": "flags.3?BotInfo"
+        },
+        {
+          "name": "pinned_msg_id",
+          "type": "flags.6?int"
+        },
+        {
+          "name": "common_chats_count",
+          "type": "int"
+        },
+        {
+          "name": "folder_id",
+          "type": "flags.11?int"
+        },
+        {
+          "name": "ttl_period",
+          "type": "flags.14?int"
+        },
+        {
+          "name": "theme_emoticon",
+          "type": "flags.15?string"
+        }
+      ],
+      "type": "UserFull"
+    },
+    "messages.chatFull": {
+      "id": -438840932,
+      "predicate": "messages.chatFull",
+      "params": [
+        {
+          "name": "full_chat",
+          "type": "ChatFull"
+        },
+        {
+          "name": "chats",
+          "type": "Vector<Chat>"
+        },
+        {
+          "name": "users",
+          "type": "Vector<User>"
+        }
+      ],
+      "type": "messages.ChatFull"
+    },
+    "chatFull": {
+      "id": 1304281241,
+      "predicate": "chatFull",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "can_set_username",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "has_scheduled",
+          "type": "flags.8?true"
+        },
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "about",
+          "type": "string"
+        },
+        {
+          "name": "participants",
+          "type": "ChatParticipants"
+        },
+        {
+          "name": "chat_photo",
+          "type": "flags.2?Photo"
+        },
+        {
+          "name": "notify_settings",
+          "type": "PeerNotifySettings"
+        },
+        {
+          "name": "exported_invite",
+          "type": "flags.13?ExportedChatInvite"
+        },
+        {
+          "name": "bot_info",
+          "type": "flags.3?Vector<BotInfo>"
+        },
+        {
+          "name": "pinned_msg_id",
+          "type": "flags.6?int"
+        },
+        {
+          "name": "folder_id",
+          "type": "flags.11?int"
+        },
+        {
+          "name": "call",
+          "type": "flags.12?InputGroupCall"
+        },
+        {
+          "name": "ttl_period",
+          "type": "flags.14?int"
+        },
+        {
+          "name": "groupcall_default_join_as",
+          "type": "flags.15?Peer"
+        },
+        {
+          "name": "theme_emoticon",
+          "type": "flags.16?string"
+        }
+      ],
+      "type": "ChatFull"
+    },
+    "channelFull": {
+      "id": -374179305,
+      "predicate": "channelFull",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "can_view_participants",
+          "type": "flags.3?true"
+        },
+        {
+          "name": "can_set_username",
+          "type": "flags.6?true"
+        },
+        {
+          "name": "can_set_stickers",
+          "type": "flags.7?true"
+        },
+        {
+          "name": "hidden_prehistory",
+          "type": "flags.10?true"
+        },
+        {
+          "name": "can_set_location",
+          "type": "flags.16?true"
+        },
+        {
+          "name": "has_scheduled",
+          "type": "flags.19?true"
+        },
+        {
+          "name": "can_view_stats",
+          "type": "flags.20?true"
+        },
+        {
+          "name": "blocked",
+          "type": "flags.22?true"
+        },
+        {
+          "name": "id",
+          "type": "long"
+        },
+        {
+          "name": "about",
+          "type": "string"
+        },
+        {
+          "name": "participants_count",
+          "type": "flags.0?int"
+        },
+        {
+          "name": "admins_count",
+          "type": "flags.1?int"
+        },
+        {
+          "name": "kicked_count",
+          "type": "flags.2?int"
+        },
+        {
+          "name": "banned_count",
+          "type": "flags.2?int"
+        },
+        {
+          "name": "online_count",
+          "type": "flags.13?int"
+        },
+        {
+          "name": "read_inbox_max_id",
+          "type": "int"
+        },
+        {
+          "name": "read_outbox_max_id",
+          "type": "int"
+        },
+        {
+          "name": "unread_count",
+          "type": "int"
+        },
+        {
+          "name": "chat_photo",
+          "type": "Photo"
+        },
+        {
+          "name": "notify_settings",
+          "type": "PeerNotifySettings"
+        },
+        {
+          "name": "exported_invite",
+          "type": "flags.23?ExportedChatInvite"
+        },
+        {
+          "name": "bot_info",
+          "type": "Vector<BotInfo>"
+        },
+        {
+          "name": "migrated_from_chat_id",
+          "type": "flags.4?long"
+        },
+        {
+          "name": "migrated_from_max_id",
+          "type": "flags.4?int"
+        },
+        {
+          "name": "pinned_msg_id",
+          "type": "flags.5?int"
+        },
+        {
+          "name": "stickerset",
+          "type": "flags.8?StickerSet"
+        },
+        {
+          "name": "available_min_id",
+          "type": "flags.9?int"
+        },
+        {
+          "name": "folder_id",
+          "type": "flags.11?int"
+        },
+        {
+          "name": "linked_chat_id",
+          "type": "flags.14?long"
+        },
+        {
+          "name": "location",
+          "type": "flags.15?ChannelLocation"
+        },
+        {
+          "name": "slowmode_seconds",
+          "type": "flags.17?int"
+        },
+        {
+          "name": "slowmode_next_send_date",
+          "type": "flags.18?int"
+        },
+        {
+          "name": "stats_dc",
+          "type": "flags.12?int"
+        },
+        {
+          "name": "pts",
+          "type": "int"
+        },
+        {
+          "name": "call",
+          "type": "flags.21?InputGroupCall"
+        },
+        {
+          "name": "ttl_period",
+          "type": "flags.24?int"
+        },
+        {
+          "name": "pending_suggestions",
+          "type": "flags.25?Vector<string>"
+        },
+        {
+          "name": "groupcall_default_join_as",
+          "type": "flags.26?Peer"
+        },
+        {
+          "name": "theme_emoticon",
+          "type": "flags.27?string"
+        },
+        {
+          "name": "business_location",
+          "type": "flags.28?int"
+        },
+        {
+          "name": "default_send_as",
+          "type": "flags.29?int"
+        }
+      ],
+      "type": "ChatFull"
+    },
+    "chatParticipants": {
+      "id": 1018991608,
+      "predicate": "chatParticipants",
+      "params": [
+        {
+          "name": "chat_id",
+          "type": "long"
+        },
+        {
+          "name": "participants",
+          "type": "Vector<ChatParticipant>"
+        },
+        {
+          "name": "version",
+          "type": "int"
+        }
+      ],
+      "type": "ChatParticipants"
+    },
+    "chatParticipantsForbidden": {
+      "id": -2023500831,
+      "predicate": "chatParticipantsForbidden",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "chat_id",
+          "type": "long"
+        },
+        {
+          "name": "self_participant",
+          "type": "flags.0?ChatParticipant"
+        }
+      ],
+      "type": "ChatParticipants"
+    },
+    "chatParticipant": {
+      "id": -1070776313,
+      "predicate": "chatParticipant",
+      "params": [
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "inviter_id",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        }
+      ],
+      "type": "ChatParticipant"
+    },
+    "chatParticipantAdmin": {
+      "id": -1600962725,
+      "predicate": "chatParticipantAdmin",
+      "params": [
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "inviter_id",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        }
+      ],
+      "type": "ChatParticipant"
+    },
+    "chatParticipantCreator": {
+      "id": -462696732,
+      "predicate": "chatParticipantCreator",
+      "params": [
+        {
+          "name": "user_id",
+          "type": "long"
+        }
+      ],
+      "type": "ChatParticipant"
+    },
+    "channels.channelParticipants": {
+      "id": -1699676497,
+      "predicate": "channels.channelParticipants",
+      "params": [
+        {
+          "name": "count",
+          "type": "int"
+        },
+        {
+          "name": "participants",
+          "type": "Vector<ChannelParticipant>"
+        },
+        {
+          "name": "chats",
+          "type": "Vector<Chat>"
+        },
+        {
+          "name": "users",
+          "type": "Vector<User>"
+        }
+      ],
+      "type": "channels.ChannelParticipants"
+    },
+    "channels.channelParticipant": {
+      "id": -541588713,
+      "predicate": "channels.channelParticipant",
+      "params": [
+        {
+          "name": "participant",
+          "type": "ChannelParticipant"
+        },
+        {
+          "name": "chats",
+          "type": "Vector<Chat>"
+        },
+        {
+          "name": "users",
+          "type": "Vector<User>"
+        }
+      ],
+      "type": "channels.ChannelParticipant"
+    },
+    "channelParticipant": {
+      "id": -1072953408,
+      "predicate": "channelParticipant",
+      "params": [
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        }
+      ],
+      "type": "ChannelParticipant"
+    },
+    "channelParticipantSelf": {
+      "id": 682146919,
+      "predicate": "channelParticipantSelf",
+      "params": [
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "inviter_id",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        }
+      ],
+      "type": "ChannelParticipant"
+    },
+    "channelParticipantCreator": {
+      "id": 803602899,
+      "predicate": "channelParticipantCreator",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "admin_rights",
+          "type": "ChatAdminRights"
+        },
+        {
+          "name": "rank",
+          "type": "flags.0?string"
+        }
+      ],
+      "type": "ChannelParticipant"
+    },
+    "channelParticipantAdmin": {
+      "id": 885242707,
+      "predicate": "channelParticipantAdmin",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "can_edit",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "self",
+          "type": "flags.1?true"
+        },
+        {
+          "name": "user_id",
+          "type": "long"
+        },
+        {
+          "name": "inviter_id",
+          "type": "flags.1?long"
+        },
+        {
+          "name": "promoted_by",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        },
+        {
+          "name": "admin_rights",
+          "type": "ChatAdminRights"
+        },
+        {
+          "name": "rank",
+          "type": "flags.2?string"
+        }
+      ],
+      "type": "ChannelParticipant"
+    },
+    "channelParticipantBanned": {
+      "id": 1844969806,
+      "predicate": "channelParticipantBanned",
+      "params": [
+        {
+          "name": "flags",
+          "type": "#"
+        },
+        {
+          "name": "left",
+          "type": "flags.0?true"
+        },
+        {
+          "name": "peer",
+          "type": "Peer"
+        },
+        {
+          "name": "kicked_by",
+          "type": "long"
+        },
+        {
+          "name": "date",
+          "type": "int"
+        },
+        {
+          "name": "banned_rights",
+          "type": "ChatBannedRights"
+        }
+      ],
+      "type": "ChannelParticipant"
+    },
+    "channelParticipantLeft": {
+      "id": 453242886,
+      "predicate": "channelParticipantLeft",
+      "params": [
+        {
+          "name": "peer",
+          "type": "Peer"
+        }
+      ],
+      "type": "ChannelParticipant"
+    }
+  },
+  "user_full_shape": "legacy userFull with nested user; no guessed modern wrapper",
+  "local_acceptance": {
+    "tests": "tests/test_account_profiles.py",
+    "profile_tests_passed": 36,
+    "full_suite_tests_passed": 283,
+    "five_rpc_binary_tl_http": true,
+    "forbidden_and_unknown_counts_distinct": true,
+    "typed_identity_validation": true,
+    "bounded_pagination_and_duplicate_handling": true,
+    "permission_and_flood_errors_not_retried": true,
+    "generic_self_role_reconciliation_tests": true
+  },
+  "live_read_only_acceptance": {
+    "self_full_user": true,
+    "public_channel_full_info": true,
+    "public_channel_member_count_present": true,
+    "private_ids_names_about_recorded": false,
+    "private_channel_full_info": true,
+    "private_channel_member_and_owner_list": true,
+    "self_owner_role_from_creator_flag_after_fix": true
+  },
+  "live_member_list_requests_performed": true,
+  "agent_live_mutations_performed": false,
+  "otp_requested": false,
+  "pending_acceptance": [
+    "basic-group full information and forbidden participant behavior",
+    "supergroup full information and optional counters",
+    "multiple-page membership and further filters",
+    "explicit absent/banned/restricted membership"
+  ],
+  "unsupported": [
+    "membership mutations",
+    "guaranteed exhaustive hidden-subscriber extraction",
+    "atomic membership snapshot"
+  ],
+  "self_role_observation": {
+    "single_participant_constructor": "channelParticipantSelf",
+    "explicit_inputPeerUser_also_returned_generic_self": true,
+    "list_self_constructor": "channelParticipantCreator",
+    "full_channel_identity_creator_flag": true,
+    "resolution": "Generic self membership is unknown-role until explicit creator/admin flags from the matched channel profile; no synthetic ordinary-member role",
+    "private_identifiers_or_names_recorded": false
+  },
+  "user_live_acceptance": {
+    "self_full_user": true,
+    "public_channel_count": true,
+    "private_channel_full_info": true,
+    "private_channel_members_and_owner": true,
+    "self_owner_lookup_after_fix": true
+  }
+}

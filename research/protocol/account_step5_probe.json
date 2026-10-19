@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-10-17",
+  "source": {
+    "file": "mtproto.worker-Zk-UnVZ2.js",
+    "sha256": "ef186db9dfa2a1e79ad30aadd805a5d455e90ee66b2827feca8006df979f4c17",
+    "offset_unit": "Unicode code points",
+    "send_message_schema_offset": 425401,
+    "short_sent_response_handling_offset": 660817
+  },
+  "live_read_only": {
+    "session_source": "Existing SDK account.session; credentials omitted",
+    "public_username": "eitaa",
+    "history_page_size_requested": 3,
+    "first_page_messages": 3,
+    "single_message_lookup_matched": true,
+    "second_page_messages": 3,
+    "second_page_ids_older_than_offset": true
+  },
+  "live_send_performed": false,
+  "live_reply_performed": false,
+  "user_reported_live_acceptance": {
+    "source": "User-provided local CLI results; no agent send",
+    "destination": "self",
+    "send_confirmed": true,
+    "exact_message_readback": true,
+    "reply_linkage_readback": true,
+    "newest_first_history": true,
+    "other_destination_send_verified": false
+  },
+  "otp_requested": false,
+  "notes": [
+    "No private peer IDs, message IDs, message text, phone numbers or credentials are recorded.",
+    "The live_send_performed/live_reply_performed fields describe the development agent's probe only. User self-send/reply acceptance is recorded separately without private identifiers or text.",
+    "Uncertain writes are not retried automatically. No server deduplication lifetime is claimed."
+  ]
+}

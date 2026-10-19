@@ -83,7 +83,7 @@ class SessionTests(unittest.TestCase):
 
     def test_phone_and_device_match_web_algorithm(self):
         self.assertEqual(normalize_phone('00۹۸ (۹۱۲) ۰۰۰-۰۰۰۰'), PHONE)
-        for phone in ('09120000000', '+0989120000000', 'token', None, '+98abc9120000000'):
+        for phone in ('0912000000', '091200000000', '02120000000', '9120000000', '+0989120000000', 'token', None, '+98abc9120000000'):
             with self.assertRaises(ValueError):
                 normalize_phone(phone)
         with patch('fnceitaa.account_client.time.time_ns', return_value=1_000_000_000):
@@ -91,6 +91,15 @@ class SessionTests(unittest.TestCase):
         prefix = hashlib.sha256(b'989120000000').hexdigest()[:6]
         self.assertEqual(device, prefix + '000000rs1__web')
         self.assertEqual(len(device), 20)
+
+    def test_iranian_mobile_formats_normalize_to_same_identity(self):
+        for phone in ('09120000000', '۰۹۱۲۰۰۰۰۰۰۰', '٠٩١٢٠٠٠٠٠٠٠',
+                      ' (0912) 000-0000 ', PHONE, '00989120000000'):
+            with self.subTest(phone=phone):
+                self.assertEqual(normalize_phone(phone), PHONE)
+                self.assertEqual(create_device_id(phone, timestamp_ms=1000),
+                                 create_device_id(PHONE, timestamp_ms=1000))
+        self.assertEqual(normalize_phone('+447700900000'), '+447700900000')
 
     def test_legacy_hash_utf8_vector(self):
         # Independently calculated salted SHA-256 vector, not a plaintext RPC.
@@ -337,7 +346,7 @@ class LoginWireTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory, 'account.session')
             with patch('fnceitaa.account.requests.post', side_effect=[response_for(p) for p in packets]) as post:
-                async with AccountClient(path) as client:
+                async with AccountClient(path, auto_login=False) as client:
                     await client.request_code(PHONE)
                     await client.sign_in('12345')
                     self.assertTrue(client.is_authorized)
@@ -356,7 +365,7 @@ class LoginWireTests(unittest.IsolatedAsyncioTestCase):
             with tempfile.TemporaryDirectory() as directory:
                 path = Path(directory, 'account.session')
                 with patch('fnceitaa.account.requests.post', side_effect=[response_for(p) for p in packets]) as post:
-                    async with AccountClient(path) as client:
+                    async with AccountClient(path, auto_login=False) as client:
                         await client.request_code(PHONE)
                         with self.assertRaises(TLCodecError):
                             await client.sign_in('12345')
@@ -378,7 +387,7 @@ class LoginWireTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory, 'account.session')
             with patch('fnceitaa.account.requests.post', side_effect=[response_for(p) for p in packets]) as post:
-                async with AccountClient(path) as client:
+                async with AccountClient(path, auto_login=False) as client:
                     await client.request_code(PHONE)
                     await client.sign_in('123456')
                     self.assertTrue(client.is_authorized)
@@ -399,7 +408,7 @@ class LoginWireTests(unittest.IsolatedAsyncioTestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory, 'account.session')
             with patch('fnceitaa.account.requests.post', side_effect=[response_for(p) for p in packets]) as post:
-                async with AccountClient(path) as client:
+                async with AccountClient(path, auto_login=False) as client:
                     await client.request_code(PHONE)
                     with self.assertRaises(PasswordRequiredError):
                         await client.sign_in('123456')
@@ -417,12 +426,13 @@ class LoginWireTests(unittest.IsolatedAsyncioTestCase):
 class LoginExampleTests(unittest.TestCase):
     def test_invalid_phone_reprompts_locally_without_network_or_confirmation(self):
         from examples.account_login import read_phone
-        with patch('examples.account_login.secret', side_effect=['09120000000', '', '+989120000000']), \
+        with patch('examples.account_login.secret', side_effect=['0912000000', '', '09120000000']) as prompt, \
                 patch('builtins.print') as output, patch('builtins.input') as confirmation, \
                 patch('fnceitaa.account.requests.post') as network:
             self.assertEqual(read_phone(), PHONE)
         network.assert_not_called()
         confirmation.assert_not_called()
+        self.assertEqual(prompt.call_count, 3)
         self.assertNotIn('09120000000', repr(output.call_args_list))
 
     def test_default_example_never_calls_network_or_reads_secrets(self):

@@ -3,6 +3,7 @@ import asyncio
 from dataclasses import dataclass, field
 from importlib.resources import files
 import json
+import logging
 import re
 import time
 from typing import Any
@@ -17,6 +18,7 @@ from .protocol import TLCodec, TLCodecError
 DEFAULT_ENDPOINT = 'https://hasan.eitaa.ir/eitaa/'
 ACCOUNT_USER_AGENT = 'Fnc-Eitaa/0.1.0'
 TOKEN_SIGNALS = {'eitaa_updates_expire_token', 'eitaa_token_updating'}
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -224,6 +226,7 @@ class AccountHTTPTransport:
             # Method names are public schema identifiers; params/data may be secrets.
             raise TLCodecError(f'{method}: {exc}') from None
         reply = correlate(value, request_id)
+        logger.info('Account RPC %s: attached_updates=%d', method, len(reply.updates))
         if tail_bytes:
             return AccountReply(reply.request_id, reply.result, reply.updates,
                                 reply.control, tail_bytes)

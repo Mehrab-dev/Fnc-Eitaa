@@ -189,3 +189,7 @@ research/*.js
 *.session-wal
 *.session-shm
 .fnceitaa/
+*.queue.sqlite3
+*.queue.sqlite3-wal
+*.queue.sqlite3-shm
+*.queue.sqlite3-journal
