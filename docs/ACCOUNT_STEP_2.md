@@ -117,7 +117,6 @@ timeout خواندن ادامه پیدا کند. این محدودیت معاد�
 ## بررسی توسعه و بسته‌بندی
 
 ```powershell
-python -m unittest discover -s tests -v
 python scripts/sync_protocol.py --check
 python -m pip wheel . --no-deps --wheel-dir dist
 ```

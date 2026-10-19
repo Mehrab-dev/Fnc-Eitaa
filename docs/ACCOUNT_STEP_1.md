@@ -56,7 +56,6 @@
 
 ```powershell
 python scripts/extract_protocol.py --verify
-python -m unittest discover -s tests -v
 ```
 
 فایل‌های JavaScript منبع در `research/` نگهداری محلی می‌شوند و در Git نادیده

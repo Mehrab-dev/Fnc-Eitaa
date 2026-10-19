@@ -566,6 +566,8 @@ except SendMessageUncertainError as error:
          'پیاده‌سازی‌شده، تست محلی و مشاهدهٔ واقعی را جدا بخوان.',
          'Distinguish implementation, local testing and observed live behavior.', [
         heading('observed', 'آنچه در حساب واقعی بررسی شده', 'Observed live behavior'),
+        note('نسخهٔ آمادهٔ انتشار شامل پوشهٔ tests و ابزارهای تست زندهٔ توسعه نیست. ارجاع یادداشت‌های مرحله‌ای به آن فایل‌ها تاریخی است؛ نسخهٔ قبلی آن‌ها در تاریخچهٔ Git موجود است. نمونه‌های کاربردی examples همچنان همراه مخزن هستند.',
+             'The release source tree omits the development tests directory and live acceptance tools. References in phase notes describe historical coverage; earlier files remain in Git history. Runnable examples remain in the repository.'),
         note('وضعیت این جدول گزارش بررسی‌های قبلی است؛ تغییر مستندات یا موفقیت تست آفلاین به معنی تأیید زندهٔ جدید نیست. پوشش یک متد در schema هم تضمین پشتیبانی کامل آن در SDK نیست.',
              'This table records earlier checks; documentation changes or passing offline tests do not establish new live acceptance. A method appearing in the schema does not establish full SDK support.'),
         paragraph('این صفحه بر پایهٔ تست‌های کاربر و شواهد محلی در ۱۷ اکتبر ۲۰۲۶ است. تأیید یک مسیر در پیام‌های ذخیره‌شده، تأیید همهٔ مقصدها و مجوزها نیست.',

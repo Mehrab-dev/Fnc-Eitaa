@@ -96,5 +96,5 @@ OTP ارسال نشد؛ نام‌ها، متن پیام‌ها، شناسه‌ه
 سشن لغوشده و جلوگیری از OTP و retry ناخواسته‌اند.
 
 ```powershell
-python -m unittest discover -s tests -q
+python -m examples.account_dialogs --help
 ```

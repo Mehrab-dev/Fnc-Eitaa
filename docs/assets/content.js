@@ -1719,6 +1719,14 @@ window.FNC_DOCS = {
         {
           "type": "note",
           "text": {
+            "fa": "نسخهٔ آمادهٔ انتشار شامل پوشهٔ tests و ابزارهای تست زندهٔ توسعه نیست. ارجاع یادداشت‌های مرحله‌ای به آن فایل‌ها تاریخی است؛ نسخهٔ قبلی آن‌ها در تاریخچهٔ Git موجود است. نمونه‌های کاربردی examples همچنان همراه مخزن هستند.",
+            "en": "The release source tree omits the development tests directory and live acceptance tools. References in phase notes describe historical coverage; earlier files remain in Git history. Runnable examples remain in the repository."
+          },
+          "tone": "info"
+        },
+        {
+          "type": "note",
+          "text": {
             "fa": "وضعیت این جدول گزارش بررسی‌های قبلی است؛ تغییر مستندات یا موفقیت تست آفلاین به معنی تأیید زندهٔ جدید نیست. پوشش یک متد در schema هم تضمین پشتیبانی کامل آن در SDK نیست.",
             "en": "This table records earlier checks; documentation changes or passing offline tests do not establish new live acceptance. A method appearing in the schema does not establish full SDK support."
           },

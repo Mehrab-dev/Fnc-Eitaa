@@ -142,5 +142,5 @@ asyncio.run(main())
 پیام‌های خود کاربر در مستندات و شواهد ثبت نشده‌اند.
 
 ```powershell
-python -m unittest discover -s tests -q
+python -m examples.account_messages --help
 ```

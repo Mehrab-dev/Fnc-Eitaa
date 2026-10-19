@@ -66,7 +66,7 @@ python -m examples.step1 send yourchannel "پاسخ به پست" --reply-to 123
 ## بررسی محلی
 
 ```powershell
-python -m unittest discover -s tests -v
+python -m examples.step1 --help
 ```
 
 تست‌های `tests/test_step1.py` مسیر کامل Client و transport را با HTTP شبیه‌سازی‌شده

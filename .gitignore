@@ -193,3 +193,10 @@ research/*.js
 *.queue.sqlite3-wal
 *.queue.sqlite3-shm
 *.queue.sqlite3-journal
+
+# Local media acceptance fixtures and downloaded outputs
+/clip.mp4
+/photo.jpg
+/voice.ogg
+/downloaded_*
+/test1.py

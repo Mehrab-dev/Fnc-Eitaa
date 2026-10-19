@@ -151,7 +151,6 @@ JSON نسخه‌دار شامل توکن، شناسهٔ دستگاه، شناس�
 را به‌صورت محدود می‌پذیرد. تفاوت flags مسیر قدیمی در فایل شواهد ثبت شده است.
 
 ```powershell
-python -m unittest discover -s tests -v
 python scripts/extract_auth_evidence.py --check
 python scripts/sync_protocol.py --check
 ```
