@@ -189,6 +189,24 @@ class TLCodec:
             raise TLCodecError('Invalid direct Eitaa login authorization')
         return value, len(data) - reader.offset
 
+    def decode_token_refresh_prefix(self, data: bytes):
+        """Read one direct renewal candidate; caller must verify account identity.
+
+        The web HTTP parser reads one object without a whole-buffer check.
+        Any suffix stays opaque; general decoding remains strict.
+        """
+        if not isinstance(data, bytes):
+            raise TLCodecError('TL input must be bytes')
+        reader = _Reader(data, _Budget(self.limits))
+        entry = self.schema.names['MTProto']['eitaa_updates_token']
+        if reader.peek_id() != entry['id'] & 0xffffffff:
+            raise TLCodecError('Expected direct Eitaa token renewal')
+        value = self._read(reader, 'EitaaUpdatesToken', 'MTProto', 0, {})
+        token = value.get('token')
+        if not isinstance(token, str) or not 0 < len(token) <= 16384:
+            raise TLCodecError('Invalid direct Eitaa token renewal')
+        return value, len(data) - reader.offset
+
     def _call(self, writer, call, namespace, depth):
         writer.budget.visit(depth)
         entry = self.schema.method(call.method, namespace)

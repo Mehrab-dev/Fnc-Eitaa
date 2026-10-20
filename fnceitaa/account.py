@@ -28,6 +28,7 @@ class AccountReply:
     updates: tuple = field(default=(), repr=False)
     control: str | None = None
     authorization_tail_bytes: int = 0
+    token_refresh_tail_bytes: int = 0
 
 
 def _rpc_failure(value):
@@ -208,6 +209,7 @@ class AccountHTTPTransport:
         task.add_done_callback(completed)
         data = await asyncio.shield(task)
         tail_bytes = 0
+        refresh_tail_bytes = 0
         try:
             try:
                 value = self.codec.decode(data, result_type, namespace='MTProto',
@@ -215,11 +217,15 @@ class AccountHTTPTransport:
             except TLCodecError as strict_error:
                 # The official no-auth-key HTTP parser fetches one TL object
                 # without a whole-buffer finish check. Limit compatibility to
-                # direct login authorization; all other RPCs stay strict.
-                if method not in ('auth.signIn', 'auth.checkPassword', 'auth.checkPassword2'):
+                # direct login/renewal candidates verified by the session layer.
+                if method not in ('auth.signIn', 'auth.checkPassword', 'auth.checkPassword2',
+                                  'eitaaRefreshToken'):
                     raise
                 try:
-                    value, tail_bytes = self.codec.decode_authorization_prefix(data)
+                    if method == 'eitaaRefreshToken':
+                        value, refresh_tail_bytes = self.codec.decode_token_refresh_prefix(data)
+                    else:
+                        value, tail_bytes = self.codec.decode_authorization_prefix(data)
                 except TLCodecError:
                     raise strict_error from None
         except TLCodecError as exc:
@@ -227,7 +233,7 @@ class AccountHTTPTransport:
             raise TLCodecError(f'{method}: {exc}') from None
         reply = correlate(value, request_id)
         logger.info('Account RPC %s: attached_updates=%d', method, len(reply.updates))
-        if tail_bytes:
+        if tail_bytes or refresh_tail_bytes:
             return AccountReply(reply.request_id, reply.result, reply.updates,
-                                reply.control, tail_bytes)
+                                reply.control, tail_bytes, refresh_tail_bytes)
         return reply

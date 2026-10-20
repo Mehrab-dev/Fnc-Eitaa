@@ -168,6 +168,35 @@ window.FNC_DOCS = {
           }
         },
         {
+          "type": "heading",
+          "id": "github-install",
+          "text": {
+            "fa": "نصب مستقیم از گیت‌هاب",
+            "en": "Install directly from GitHub"
+          }
+        },
+        {
+          "type": "paragraph",
+          "text": {
+            "fa": "با Python 3.10 یا جدیدتر و Git نصب‌شده، دستور زیر را در محیط مجازی خود اجرا کن. این دستور آخرین کد منتشرشده در مخزن را نصب می‌کند؛ تغییرات محلی تا قبل از push در آن قرار نمی‌گیرند.",
+            "en": "With Python 3.10 or newer and Git installed, run the following command in your virtual environment. It installs the latest code published to the repository; local changes are included only after they are pushed."
+          }
+        },
+        {
+          "type": "code",
+          "label": "Install from GitHub",
+          "language": "powershell",
+          "value": "python -m pip install \"git+https://github.com/Mehrab-dev/Fnc-Eitaa.git\""
+        },
+        {
+          "type": "heading",
+          "id": "local-install",
+          "text": {
+            "fa": "نصب برای توسعه و تست محلی",
+            "en": "Install for local development and testing"
+          }
+        },
+        {
           "type": "code",
           "label": "Windows · PowerShell",
           "language": "powershell",
@@ -196,15 +225,15 @@ window.FNC_DOCS = {
         {
           "type": "paragraph",
           "text": {
-            "fa": "شمارهٔ موبایل ایران را با `09` و در مجموع ۱۱ رقم وارد کن؛ لازم نیست خودت `+98` بنویسی. ارقام فارسی و عربی هم پذیرفته می‌شوند. نمونه شماره، کد و رمز احتمالی را مخفی دریافت می‌کند و قبل از درخواست کد تأیید می‌خواهد. پس از پیام ذخیرهٔ موفق سشن، همین دستور را دوباره اجرا کن؛ خروجی `Session reconnected` اتصال بدون کد تازه را نشان می‌دهد.",
-            "en": "Enter an 11-digit Iranian mobile number starting with `09`; you do not need to type `+98`. Persian and Arabic digits are also accepted. The example reads your phone, code and optional password with hidden terminal input and asks before requesting a code. After the session is saved, run the same command again. `Session reconnected` confirms reconnection without a new code."
+            "fa": "شمارهٔ موبایل ایران را با `09` و در مجموع ۱۱ رقم وارد کن؛ لازم نیست خودت `+98` بنویسی. ارقام فارسی و عربی هم پذیرفته می‌شوند. شماره هنگام تایپ نمایش داده می‌شود و با Enter درخواست کد بدون تأیید yes/no ارسال می‌شود. پس از پیام ذخیرهٔ موفق سشن، همین دستور را دوباره اجرا کن؛ خروجی `Session reconnected` اتصال بدون کد تازه را نشان می‌دهد.",
+            "en": "Enter an 11-digit Iranian mobile number starting with `09`; you do not need to type `+98`. Persian and Arabic digits are also accepted. The phone number is visible while typing; pressing Enter requests a code without yes/no confirmation. After the session is saved, run the same command again. `Session reconnected` confirms reconnection without a new code."
           }
         },
         {
           "type": "note",
           "text": {
-            "fa": "هنگام تایپ شماره، کد و رمز هیچ کاراکتری نمایش داده نمی‌شود؛ این رفتار طبیعی ورودی مخفی است. برای تأیید درخواست کد، واژهٔ `yes` را با حروف انگلیسی وارد کن. شماره را در دستور یا کد برنامه ننویس؛ در ترمینال وارد کن.",
-            "en": "Hidden phone, code and password input displays no characters as you type. Type the English word `yes` to confirm a code request. Enter your number at the terminal prompt rather than in a command or source file."
+            "fa": "کد ورود و رمز دوم هنگام تایپ مخفی می‌مانند. شماره را در دستور یا کد برنامه ننویس؛ در ترمینال وارد کن.",
+            "en": "The login code and two-step password stay hidden while typing. Enter your number at the terminal prompt rather than in a command or source file."
           },
           "tone": "info"
         },
@@ -276,9 +305,17 @@ window.FNC_DOCS = {
         {
           "type": "paragraph",
           "text": {
-            "fa": "`async with` متد `start()` را اجرا می‌کند: ابتدا سشن موجود از سرور بررسی می‌شود؛ اگر فایل نباشد یا سرور صریحاً سشن را باطل اعلام کند، روند ورود تعاملی شروع می‌شود. شماره، کد و رمز دوم احتمالی مخفی گرفته می‌شوند. پس از ورود، سشن ذخیره می‌شود و بدنهٔ برنامه ادامه پیدا می‌کند. هنگام خروج، disconnect اتصال محلی را می‌بندد.",
-            "en": "`async with` calls `start()`: it checks an existing session against the server, then starts terminal login if the file is missing or the server explicitly rejects the session. Phone, code and any two-step password use hidden input. After login the session is saved and your application block runs. Exiting disconnects locally."
+            "fa": "`async with` متد `start()` را اجرا می‌کند: ابتدا سشن موجود از سرور بررسی می‌شود؛ اگر فایل نباشد یا سرور صریحاً سشن را باطل اعلام کند، روند ورود تعاملی شروع می‌شود. شماره نمایش داده می‌شود و درخواست کد تأیید yes/no ندارد؛ کد و رمز دوم مخفی می‌مانند. پس از ورود، سشن ذخیره می‌شود و بدنهٔ برنامه ادامه پیدا می‌کند. هنگام خروج، disconnect اتصال محلی را می‌بندد.",
+            "en": "`async with` calls `start()`: it checks an existing session against the server, then starts terminal login if the file is missing or the server explicitly rejects the session. Phone input is visible and code requests need no yes/no confirmation; the code and two-step password stay hidden. After login the session is saved and your application block runs. Exiting disconnects locally."
           }
+        },
+        {
+          "type": "note",
+          "text": {
+            "fa": "در صورت FLOOD_WAIT هنگام ورود تعاملی، زمان انتظار نمایش داده می‌شود و برنامه بدون traceback با وضعیت خروج ۱ خاتمه می‌یابد. پس از زمان اعلام‌شده دوباره اجرا کن. در ورود برنامه‌ای با auto_login=False، خطا همچنان به فراخواننده برگردانده می‌شود.",
+            "en": "A FLOOD_WAIT during terminal login displays the wait and exits without a traceback with status 1. Run again after the displayed wait. With auto_login=False, programmatic login still raises the error to the caller."
+          },
+          "tone": "info"
         },
         {
           "type": "code",
@@ -1467,12 +1504,12 @@ window.FNC_DOCS = {
           "rows": [
             [
               {
-                "fa": "هنگام ورود چیزی تایپ نمی‌شود",
-                "en": "Nothing appears while typing login input"
+                "fa": "هنگام ورود کد یا رمز چیزی نمایش داده نمی‌شود",
+                "en": "Nothing appears while typing a login code or password"
               },
               {
-                "fa": "ورودی مخفی است؛ شمارهٔ ۱۱رقمی 09، کد یا رمز را وارد کن و Enter بزن.",
-                "en": "Input is hidden; type your 11-digit 09 number, code or password and press Enter."
+                "fa": "کد و رمز مخفی هستند؛ آن‌ها را وارد کن و Enter بزن. شماره هنگام تایپ نمایش داده می‌شود.",
+                "en": "Code and password input is hidden; type them and press Enter. Phone input is visible."
               }
             ],
             [
@@ -2359,7 +2396,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "",
       "source": "fnceitaa/account_client.py",
-      "line": 481
+      "line": 493
     },
     {
       "owner": "AccountClient",
@@ -2369,7 +2406,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Resolve self, username, cached ID, or typed user:/chat:/channel:ID.\n\nBare IDs are never guessed as a particular peer type. Access hashes\nbelong to this account; use AccountPeer values with their owning account.",
       "source": "fnceitaa/account_client.py",
-      "line": 530
+      "line": 542
     },
     {
       "owner": "AccountClient",
@@ -2379,7 +2416,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Read one page. folder_id: None=all, 0=main, 1=archive.",
       "source": "fnceitaa/account_client.py",
-      "line": 580
+      "line": 592
     },
     {
       "owner": "AccountClient",
@@ -2389,7 +2426,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Yield unique dialogs; read another page only when the consumer asks.",
       "source": "fnceitaa/account_client.py",
-      "line": 646
+      "line": 658
     },
     {
       "owner": "AccountClient",
@@ -2399,7 +2436,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Return up to limit dialogs; use iter_dialogs for lazy iteration.",
       "source": "fnceitaa/account_client.py",
-      "line": 674
+      "line": 686
     },
     {
       "owner": "AccountClient",
@@ -2409,7 +2446,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Read one message. Empty/deleted or another peer's message returns None.",
       "source": "fnceitaa/account_client.py",
-      "line": 690
+      "line": 702
     },
     {
       "owner": "AccountClient",
@@ -2419,7 +2456,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Read newest first, strictly before offset_id (zero starts at newest).",
       "source": "fnceitaa/account_client.py",
-      "line": 720
+      "line": 732
     },
     {
       "owner": "AccountClient",
@@ -2429,7 +2466,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Yield newest first; fetch pages lazily and never mark messages read.",
       "source": "fnceitaa/account_client.py",
-      "line": 755
+      "line": 767
     },
     {
       "owner": "AccountClient",
@@ -2439,7 +2476,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "",
       "source": "fnceitaa/account_client.py",
-      "line": 784
+      "line": 796
     },
     {
       "owner": "AccountClient",
@@ -2449,7 +2486,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Replace text/caption and clear styled entities; no automatic retry.\n\nMedia attachments are not replaced. Permissions/edit deadlines remain\nserver enforced. MESSAGE_NOT_MODIFIED is an explicit RPC error.",
       "source": "fnceitaa/account_client.py",
-      "line": 833
+      "line": 845
     },
     {
       "owner": "AccountClient",
@@ -2459,7 +2496,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Delete 1..100 verified messages in one RPC, without automatic splitting.\n\nrevoke=False requests local deletion in user/basic-group chats. Channel\ndeletion is shared and requires explicit revoke=True. AffectedMessages\nacknowledges the RPC; it does not enumerate which messages disappeared.",
       "source": "fnceitaa/account_client.py",
-      "line": 853
+      "line": 865
     },
     {
       "owner": "AccountClient",
@@ -2469,7 +2506,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Forward 1..100 source messages; receipts preserve input order.\n\nSupply random_ids if recovery across a crash matters. No write retries,\nautomatic splitting, or server deduplication lifetime is promised.",
       "source": "fnceitaa/account_client.py",
-      "line": 901
+      "line": 913
     },
     {
       "owner": "AccountClient",
@@ -2479,7 +2516,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "",
       "source": "fnceitaa/account_client.py",
-      "line": 912
+      "line": 924
     },
     {
       "owner": "AccountClient",
@@ -2489,7 +2526,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Server-side forward with drop_author=True; never download/reupload.\n\nServer restrictions still apply. Album grouping and media transfer are\nseparate features. A receipt may omit the full destination message.",
       "source": "fnceitaa/account_client.py",
-      "line": 919
+      "line": 931
     },
     {
       "owner": "AccountClient",
@@ -2499,7 +2536,7 @@ window.FNC_DOCS = {
       "property": false,
       "doc": "Send one plain-text message, once. No splitting or automatic resend.\n\nSupply/store random_id before calling if you need recovery across a\nprocess crash. Server-side deduplication lifetime is not guaranteed.",
       "source": "fnceitaa/account_client.py",
-      "line": 931
+      "line": 943
     },
     {
       "owner": "AccountMedia",

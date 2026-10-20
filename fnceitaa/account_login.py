@@ -27,6 +27,23 @@ async def _read_secret(prompt):
 
 
 async def interactive_login(client):
+    """Run terminal login; exit cleanly on a server-requested flood wait."""
+    try:
+        await _interactive_login(client)
+    except AccountRPCError as exc:
+        if exc.retry_after is None:
+            raise
+        minutes, seconds = divmod(exc.retry_after, 60)
+        print(f'Eitaa rate limit: try again in {minutes} min {seconds} sec '
+              f'({exc.retry_after} seconds).')
+        print('Login stopped. Run the program again after this wait; no automatic retry was sent.')
+        await client.disconnect()
+        # Returning would let an async-with body run without authentication.
+        # SystemExit ends terminal login without an unhandled-error traceback.
+        raise SystemExit(1) from None
+
+
+async def _interactive_login(client):
     """One code request, bounded code/password attempts, no flood/transport retry."""
     if not _terminal_available():
         raise AuthenticationError(
@@ -41,18 +58,14 @@ async def interactive_login(client):
         print('Login required. Enter your Iranian mobile number (09...) or an international number (+country code).')
         for attempt in range(3):
             try:
-                phone = normalize_phone(await _read_secret('Phone number (09... or +country code; hidden): '))
+                phone = normalize_phone(input('Phone number (09... or +country code): '))
                 break
+            except EOFError:
+                raise AuthenticationError('Login cancelled; no code requested') from None
             except ValueError:
                 if attempt == 2:
                     raise
                 print('Invalid phone format. Use 11 digits starting with 09, or + and country code.')
-        try:
-            confirmed = input('Request one login code for this number? [yes/NO]: ')
-        except EOFError:
-            raise AuthenticationError('Login cancelled; no code requested') from None
-        if confirmed.strip().lower() != 'yes':
-            raise AuthenticationError('Login cancelled; no code requested')
         challenge = await client.request_code(phone)
         print(f'Code response: {challenge.delivery}; length: {challenge.length}; timeout: {challenge.timeout}')
         if challenge.synthetic_ack:

@@ -73,6 +73,11 @@ asyncio.run(main())'''),
         heading('requirements', 'پیش‌نیازها', 'Requirements'),
         paragraph('حداقل نسخهٔ تعریف‌شدهٔ پایتون `3.10` است. تست‌های فعلی روی Python 3.13 ویندوز اجرا شده‌اند. دستورهای زیر را در ریشهٔ مخزن اجرا کن. نصب از مخزن، مسیر مستندشدهٔ فعلی است؛ وجود بسته در PyPI تأیید نشده است.',
                   'The declared minimum Python version is `3.10`. The current suite was run on Windows with Python 3.13. Run these commands at the repository root. Installation from source is the documented route; PyPI availability has not been verified.'),
+        heading('github-install', 'نصب مستقیم از گیت‌هاب', 'Install directly from GitHub'),
+        paragraph('با Python 3.10 یا جدیدتر و Git نصب‌شده، دستور زیر را در محیط مجازی خود اجرا کن. این دستور آخرین کد منتشرشده در مخزن را نصب می‌کند؛ تغییرات محلی تا قبل از push در آن قرار نمی‌گیرند.',
+                  'With Python 3.10 or newer and Git installed, run the following command in your virtual environment. It installs the latest code published to the repository; local changes are included only after they are pushed.'),
+        code('Install from GitHub', 'python -m pip install "git+https://github.com/Mehrab-dev/Fnc-Eitaa.git"', 'powershell'),
+        heading('local-install', 'نصب برای توسعه و تست محلی', 'Install for local development and testing'),
         code('Windows · PowerShell', r'''python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e .''', 'powershell'),
@@ -81,10 +86,10 @@ source .venv/bin/activate
 python -m pip install -e .''', 'bash'),
         heading('first-login', 'اولین ورود', 'First login'),
         code('Run from repository root', 'python -m examples.account_login --live', 'powershell'),
-        paragraph('شمارهٔ موبایل ایران را با `09` و در مجموع ۱۱ رقم وارد کن؛ لازم نیست خودت `+98` بنویسی. ارقام فارسی و عربی هم پذیرفته می‌شوند. نمونه شماره، کد و رمز احتمالی را مخفی دریافت می‌کند و قبل از درخواست کد تأیید می‌خواهد. پس از پیام ذخیرهٔ موفق سشن، همین دستور را دوباره اجرا کن؛ خروجی `Session reconnected` اتصال بدون کد تازه را نشان می‌دهد.',
-                  'Enter an 11-digit Iranian mobile number starting with `09`; you do not need to type `+98`. Persian and Arabic digits are also accepted. The example reads your phone, code and optional password with hidden terminal input and asks before requesting a code. After the session is saved, run the same command again. `Session reconnected` confirms reconnection without a new code.'),
-        note('هنگام تایپ شماره، کد و رمز هیچ کاراکتری نمایش داده نمی‌شود؛ این رفتار طبیعی ورودی مخفی است. برای تأیید درخواست کد، واژهٔ `yes` را با حروف انگلیسی وارد کن. شماره را در دستور یا کد برنامه ننویس؛ در ترمینال وارد کن.',
-             'Hidden phone, code and password input displays no characters as you type. Type the English word `yes` to confirm a code request. Enter your number at the terminal prompt rather than in a command or source file.'),
+        paragraph('شمارهٔ موبایل ایران را با `09` و در مجموع ۱۱ رقم وارد کن؛ لازم نیست خودت `+98` بنویسی. ارقام فارسی و عربی هم پذیرفته می‌شوند. شماره هنگام تایپ نمایش داده می‌شود و با Enter درخواست کد بدون تأیید yes/no ارسال می‌شود. پس از پیام ذخیرهٔ موفق سشن، همین دستور را دوباره اجرا کن؛ خروجی `Session reconnected` اتصال بدون کد تازه را نشان می‌دهد.',
+                  'Enter an 11-digit Iranian mobile number starting with `09`; you do not need to type `+98`. Persian and Arabic digits are also accepted. The phone number is visible while typing; pressing Enter requests a code without yes/no confirmation. After the session is saved, run the same command again. `Session reconnected` confirms reconnection without a new code.'),
+        note('کد ورود و رمز دوم هنگام تایپ مخفی می‌مانند. شماره را در دستور یا کد برنامه ننویس؛ در ترمینال وارد کن.',
+             'The login code and two-step password stay hidden while typing. Enter your number at the terminal prompt rather than in a command or source file.'),
         heading('first-read', 'اولین خواندن', 'Your first read'),
         code('Dialogs', 'python -m examples.account_dialogs --live --show-titles', 'powershell'),
         code('Public channel history', 'python -m examples.account_messages history --live --peer "@eitaa" --limit 5 --show-text', 'powershell'),
@@ -98,8 +103,10 @@ python -m pip install -e .''', 'bash'),
          'ورود صریح، اتصال مجدد و نگهداری درست فایل حساب.',
          'Explicit authentication, reconnection and session file handling.', [
         heading('lifecycle', 'چرخهٔ عمر اتصال', 'Connection lifecycle'),
-        paragraph('`async with` متد `start()` را اجرا می‌کند: ابتدا سشن موجود از سرور بررسی می‌شود؛ اگر فایل نباشد یا سرور صریحاً سشن را باطل اعلام کند، روند ورود تعاملی شروع می‌شود. شماره، کد و رمز دوم احتمالی مخفی گرفته می‌شوند. پس از ورود، سشن ذخیره می‌شود و بدنهٔ برنامه ادامه پیدا می‌کند. هنگام خروج، disconnect اتصال محلی را می‌بندد.',
-                  '`async with` calls `start()`: it checks an existing session against the server, then starts terminal login if the file is missing or the server explicitly rejects the session. Phone, code and any two-step password use hidden input. After login the session is saved and your application block runs. Exiting disconnects locally.'),
+        paragraph('`async with` متد `start()` را اجرا می‌کند: ابتدا سشن موجود از سرور بررسی می‌شود؛ اگر فایل نباشد یا سرور صریحاً سشن را باطل اعلام کند، روند ورود تعاملی شروع می‌شود. شماره نمایش داده می‌شود و درخواست کد تأیید yes/no ندارد؛ کد و رمز دوم مخفی می‌مانند. پس از ورود، سشن ذخیره می‌شود و بدنهٔ برنامه ادامه پیدا می‌کند. هنگام خروج، disconnect اتصال محلی را می‌بندد.',
+                  '`async with` calls `start()`: it checks an existing session against the server, then starts terminal login if the file is missing or the server explicitly rejects the session. Phone input is visible and code requests need no yes/no confirmation; the code and two-step password stay hidden. After login the session is saved and your application block runs. Exiting disconnects locally.'),
+        note('در صورت FLOOD_WAIT هنگام ورود تعاملی، زمان انتظار نمایش داده می‌شود و برنامه بدون traceback با وضعیت خروج ۱ خاتمه می‌یابد. پس از زمان اعلام‌شده دوباره اجرا کن. در ورود برنامه‌ای با auto_login=False، خطا همچنان به فراخواننده برگردانده می‌شود.',
+             'A FLOOD_WAIT during terminal login displays the wait and exits without a traceback with status 1. Run again after the displayed wait. With auto_login=False, programmatic login still raises the error to the caller.'),
         code('existing_session.py', '''import asyncio
 from fnceitaa import AccountClient
 
@@ -523,7 +530,7 @@ except SendMessageUncertainError as error:
         ]),
         heading('powershell', 'مشکلات رایج ترمینال', 'Common terminal issues'),
         table(['نشانه', 'راه‌حل'], ['Symptom', 'Fix'], [
-            [bi('هنگام ورود چیزی تایپ نمی‌شود', 'Nothing appears while typing login input'), bi('ورودی مخفی است؛ شمارهٔ ۱۱رقمی 09، کد یا رمز را وارد کن و Enter بزن.', 'Input is hidden; type your 11-digit 09 number, code or password and press Enter.')],
+            [bi('هنگام ورود کد یا رمز چیزی نمایش داده نمی‌شود', 'Nothing appears while typing a login code or password'), bi('کد و رمز مخفی هستند؛ آن‌ها را وارد کن و Enter بزن. شماره هنگام تایپ نمایش داده می‌شود.', 'Code and password input is hidden; type them and press Enter. Phone input is visible.')],
             [bi('فرمت شماره رد می‌شود', 'Phone format is rejected'), bi('موبایل ایران: ۱۱ رقم با 09؛ کشورهای دیگر: + یا 00 و کد کشور. ستاره یا سه‌نقطه وارد نکن.', 'Iranian mobile: 11 digits starting with 09. Other countries: + or 00 and country code. Do not type masking stars or ellipses.')],
             ['`ModuleNotFoundError: fnceitaa`', bi('با همان پایتونی که برنامه را اجرا می‌کند python -m pip install -e . بزن و مفسر IDE را هماهنگ کن.', 'Run python -m pip install -e . using the same Python as your application and select that interpreter in your IDE.')],
             ['`Activate.ps1`', bi('اگر فعال‌سازی محیط مجاز نیست، مستقیماً ./.venv/Scripts/python.exe را به جای python اجرا کن.', 'If activation is unavailable, invoke ./.venv/Scripts/python.exe directly instead of python.')],

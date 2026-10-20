@@ -446,9 +446,21 @@ class AccountClient:
             raise AuthenticationError('Token renewal did not return a replacement token')
         try:
             session = replace(self._current_session(), token=value.get('token'))
+            if reply.token_refresh_tail_bytes:
+                # An opaque suffix is accepted only after an independent,
+                # strictly decoded identity read using the candidate token.
+                self._rpc_transport().set_token(session.token)
+                identity = await self._rpc_transport().invoke(
+                    'users.getUsers', {'id': [{'_': 'inputUserSelf'}]})
+                users = identity.result
+                if (not isinstance(users, list) or len(users) != 1
+                        or not isinstance(users[0], dict) or users[0].get('_') != 'user'
+                        or type(users[0].get('id')) is not int
+                        or users[0]['id'] != session.user_id):
+                    raise TLCodecError('Renewed token identity does not match the saved session')
             self._store.save(session)
             self._rpc_transport().set_token(session.token)
-        except (SessionError, ValueError):
+        except BaseException:
             self._authorized = False
             self._uncertain = True
             raise

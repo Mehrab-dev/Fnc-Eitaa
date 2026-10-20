@@ -20,7 +20,7 @@ def secret(prompt):
 def read_phone():
     print('Enter your Iranian mobile number (09...) or an international number (+country code).')
     while True:
-        phone = secret('Phone number (09... or +country code; hidden): ')
+        phone = input('Phone number (09... or +country code): ')
         try:
             return normalize_phone(phone)
         except ValueError:
@@ -35,9 +35,6 @@ async def login(session_path):
             print(f"Session reconnected. Account ID: {user['id']}")
             return
         phone = read_phone()
-        if input('Send one login-code request to Eitaa for this number? [yes/NO]: ').strip().lower() != 'yes':
-            print('Cancelled. No OTP requested.')
-            return
         try:
             receipt = await client.request_code(phone)
         except AccountRPCError as exc:
@@ -88,6 +85,7 @@ def main():
             minutes, seconds = divmod(exc.retry_after, 60)
             print(f'Eitaa rate limit: wait at least {minutes} min {seconds} sec from this response before trying again.')
             print('No automatic retry will be sent. Close this program and retry manually after the wait.')
+            parser.exit(1)
         parser.exit(1, f'AccountRPCError: {exc}\n')
     except TLCodecError as exc:
         print('Response decoding failed; the server outcome is uncertain. No automatic retry was sent.')
