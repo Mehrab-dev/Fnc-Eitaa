@@ -108,7 +108,11 @@ def parse_media(value) -> AccountMediaInfo | None:
             name = size.get('_')
             cached = None
             if name == 'photoSize':
-                length = _integer(size.get('size'), positive=True)
+                length = _integer(size.get('size'))
+                if length == 0:
+                    # Eitaa send acknowledgements can include a placeholder
+                    # thumbnail alongside a complete downloadable size.
+                    continue
             elif name == 'photoSizeProgressive':
                 sizes = size.get('sizes')
                 if not isinstance(sizes, list) or not sizes:

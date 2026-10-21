@@ -72,7 +72,7 @@ import secrets
 from fnceitaa import AccountClient, SendMessageUncertainError
 
 async def main():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         operation_id = secrets.randbits(63) or 1
         # برای بازیابی پس از بسته‌شدن برنامه، شناسهٔ عملیات را پیش از ارسال
         # در محل مناسب برنامهٔ خودتان ثبت کنید.

@@ -42,7 +42,7 @@ from fnceitaa import AccountClient
 
 async def main():
     # A missing session starts terminal login before this block runs.
-    async with AccountClient("account.session") as client:
+    async with AccountClient("account.eitaa") as client:
         me = await client.get_me()
         print(me["id"])
         messages = await client.get_history("self", limit=5)
@@ -111,7 +111,7 @@ python -m pip install -e .''', 'bash'),
 from fnceitaa import AccountClient
 
 async def main():
-    async with AccountClient("account.session") as client:
+    async with AccountClient("account.eitaa") as client:
         print((await client.get_me())["id"])
 
 asyncio.run(main())'''),
@@ -129,7 +129,7 @@ asyncio.run(main())'''),
         code('Inside an async function', '''import getpass
 from fnceitaa import AccountClient, PasswordRequiredError
 
-async with AccountClient("new-account.session", auto_login=False) as client:
+async with AccountClient("new-account.eitaa", auto_login=False) as client:
     if not client.is_authorized:
         phone = getpass.getpass("Phone (09... or +country code): ")
         if input("Request one login code? [yes/NO]: ") != "yes":
@@ -148,9 +148,16 @@ async with AccountClient("new-account.session", auto_login=False) as client:
         note('برای حالت تعاملی همان async with کافی است؛ نمونهٔ examples.account_login هم مسیر ورود مستقل را ارائه می‌کند. برای GUI، سرویس یا ورود برنامه‌ای، auto_login=False بده و متدهای ورود را خودت فراخوانی کن. connect() همیشه سطح پایین و بدون prompt است؛ start() مسیر آمادهٔ اتصال و ورود است. ورودی ترمینال در زمان ورود روی نخ فراخواننده خوانده می‌شود تا Ctrl+C آن را قطع کند.',
              'For terminal login, async with is sufficient; examples.account_login also provides a standalone flow. For a GUI, service or custom authentication use auto_login=False and call the login methods yourself. connect() always remains low-level and prompt-free; start() combines connection and login. Terminal prompts run on the calling thread so Ctrl+C can interrupt them.'),
         heading('session-behavior', 'رفتار فایل سشن', 'Session file behavior'),
+        paragraph('فایل .eitaa بدون رمز دستی محافظت می‌شود. در ویندوز DPAPI حساب جاری کلید را مدیریت می‌کند؛ در macOS/Linux کلید تصادفی در مخزن امن سیستم‌عامل نگه‌داری می‌شود و فایل AES-GCM است. شماره، کد ورود و رمز دوم ایتا با این حفاظت محلی متفاوت‌اند و برای ورود تازه ممکن است لازم شوند.',
+                  'The .eitaa file is protected without an application password. Windows uses current-user DPAPI; macOS/Linux use a random key in the OS credential store and AES-GCM encryption. Phone, login code and Eitaa two-step authentication are separate and may still be needed for a fresh login.'),
+        note('فایل در ویرایشگر توکن قابل‌خواندن ندارد، اما برنامه‌ای با دسترسی همان حساب سیستم‌عامل ممکن است بتواند آن را بازیابی کند. فایل به‌تنهایی معمولاً روی دستگاه یا حساب دیگر قابل استفاده نیست. مخزن امن macOS/Linux باید در دسترس و باز باشد؛ نبود آن موجب خطا می‌شود، نه ذخیرهٔ بدون حفاظت.',
+             'A text editor cannot read the token, but software with access to the same OS account may decrypt it. The file alone is generally not usable under another device or OS account. The macOS/Linux credential store must be available and unlocked; no insecure plaintext fallback is used.'),
+        code('Offline legacy migration; no password or OTP prompt', 'python -m fnceitaa.session_migrate account.session', 'powershell'),
+        paragraph('ابزار انتقال account.eitaa را می‌سازد و فایل قدیمی را حفظ می‌کند. پس از تأیید اتصال، نسخهٔ بدون حفاظت را خودت حذف کن. آرگومان قدیمی .session به .eitaa اشاره می‌کند؛ اگر فقط فایل قدیمی وجود داشته باشد، برنامه پیام انتقال می‌دهد و ورود تازه آغاز نمی‌کند. صف و checkpoint را با مسیر قبلی خودشان باز کن؛ آن‌ها منتقل یا رمزنگاری نمی‌شوند.',
+                  'Migration creates account.eitaa and retains the original. After verifying reconnect, remove the plaintext copy yourself. A legacy .session argument maps to .eitaa; if only the old file exists, the client requests migration instead of starting a fresh login. Queues and checkpoints retain their old paths and are not moved or encrypted.'),
         table(['موضوع', 'رفتار'], ['Topic', 'Behavior'], [
-            [bi('مسیر پیش‌فرض', 'Default path'), '`account.session`'],
-            [bi('فرمت', 'Format'), bi('JSON؛ رمزگذاری‌شده نیست.', 'JSON; not encrypted.')],
+            [bi('مسیر پیش‌فرض', 'Default path'), '`account.eitaa`'],
+            [bi('فرمت', 'Format'), bi('دودویی محافظت‌شده؛ بدون رمز دستی سشن.', 'Protected binary; no application session password.')],
             [bi('کد و رمز ورود', 'OTP and password'), bi('در سشن ذخیره نمی‌شوند.', 'Not stored in the session.')],
             [bi('خروج از context', 'Leaving the context'), bi('قطع اتصال محلی؛ فایل و ورود راه‌دور حفظ می‌شوند.', 'Disconnects locally; retains the file and remote login.')],
             [bi('هر حساب', 'Per account'), bi('یک فایل جدا؛ هر فایل در اختیار یک پردازش.', 'A separate file; one process per session file.')],
@@ -317,6 +324,8 @@ for message in messages:
 print(downloaded.path, downloaded.size, downloaded.sha256)'''),
         paragraph('پوشهٔ مقصد را پیشاپیش بساز. دانلود از مسیر انتخابی تو استفاده می‌کند و به‌صورت پیش‌فرض فایل موجود را بازنویسی نمی‌کند. `overwrite=True` بازنویسی را صریح می‌کند. فایل دانلودی پس از تکمیل در مقصد قرار می‌گیرد و SHA256 برمی‌گردد.',
                   'Create the destination directory first. Downloads use your explicit path and refuse to overwrite an existing file by default. Set `overwrite=True` explicitly to replace it. The completed download is placed at the destination and returns a SHA256 digest.'),
+        note('خواندن قطعهٔ دانلود در خطای اتصال یا HTTP 5xx حداکثر سه بار با مکث ۱ و ۲ ثانیه تلاش می‌شود؛ RPC limit و HTTP 4xx تکرار نمی‌شوند. آپلود و ارسال پیام مشمول این رفتار نیستند.',
+             'Download chunk reads allow up to three attempts for connection failures or HTTP 5xx, with 1- and 2-second delays. RPC limits and HTTP 4xx are not retried. Uploads and message writes are excluded.'),
         heading('upload-options', 'آپلود جداگانه و گزینه‌ها', 'Separate uploads and options'),
         code('Reuse an uploaded file in the same client/account', '''uploaded = await client.upload_file("photo.jpg", peer="self")
 message = await client.send_photo("self", uploaded, caption="آپلود قبلی")
@@ -339,7 +348,7 @@ message = await client.send_file(
 from fnceitaa import AccountClient
 
 async def main():
-    async with AccountClient("account.session") as client:
+    async with AccountClient("account.eitaa") as client:
         updates = client.updates()
         await updates.initialize()
         while True:
@@ -382,8 +391,8 @@ await updates.run_polling(router, interval=5, replay_pts=0)'''),
         paragraph('نام رویداد اکانت `new` است؛ میانبر قدیمی `on_message()` برای نام `message` ثبت می‌شود و جایگزین آن نیست. Router هر هندلر را با یک آرگومان event فراخوانی می‌کند. خطای هندلر مانع ack همان batch می‌شود.',
                   'Account message events are named `new`. The earlier `on_message()` shortcut registers `message`, which is a different name. Router calls each handler with one event argument. A handler failure prevents acknowledgment of that batch.'),
         heading('recovery', 'ادامه و محدودیت بازیابی', 'Continuation and recovery limits'),
-        paragraph('شروع تازه از وضعیت جاری است. checkpoint پیش‌فرض `account.session.updates` است و متن پیام ذخیره نمی‌کند. فقط پس از پردازش موفق ack کن. تحویل حداقل یک بار است؛ برای اثرهای جانبی از `event_id` به‌عنوان کلید یکتا استفاده کن. برای نگهداری متن رویدادها، Inbox SQLite را انتخاب کن.',
-                  'A fresh consumer starts at current state. The default checkpoint is `account.session.updates` and does not store message bodies. Acknowledge after successful processing. Delivery is at least once; use `event_id` to deduplicate effects. Choose the SQLite inbox to persist event bodies.'),
+        paragraph('شروع تازه از وضعیت جاری است. checkpoint پیش‌فرض `account.eitaa.updates` است و متن پیام ذخیره نمی‌کند. فقط پس از پردازش موفق ack کن. تحویل حداقل یک بار است؛ برای اثرهای جانبی از `event_id` به‌عنوان کلید یکتا استفاده کن. برای نگهداری متن رویدادها، Inbox SQLite را انتخاب کن.',
+                  'A fresh consumer starts at current state. The default checkpoint is `account.eitaa.updates` and does not store message bodies. Acknowledge after successful processing. Delivery is at least once; use `event_id` to deduplicate effects. Choose the SQLite inbox to persist event bodies.'),
         note('بازیابی پیام زمان خاموشی با `replay_pts=1` تأیید شده؛ بازیابی عادی پس از توقف بدون آن هنوز تأیید نشده است. replay محدود به داده‌ای است که سرور برمی‌گرداند. `UpdateGapError` checkpoint را جلو نمی‌برد و به تصمیم صریح برای بازیابی نیاز دارد.',
              'Offline-message recovery was verified with `replay_pts=1`; ordinary restart catch-up without it remains unverified. Replay is bounded by server-retained data. `UpdateGapError` leaves the checkpoint unchanged and requires an explicit recovery decision.', 'warning'),
     ]),
@@ -449,8 +458,8 @@ await updates.run_polling(router, interval=5, replay_pts=0)'''),
         job_id, state="confirmed", note="Verified by independent readback",
         receipt={"message_ids": [verified_message_id]},
     )'''),
-        note('SQLite متن پیام‌ها، raw رویدادها و اطلاعات مقصد را بدون رمزگذاری ذخیره می‌کند. پایگاه پیش‌فرض `account.session.queue.sqlite3` به همان حساب متصل است. قبل از کپی سادهٔ پایگاه، همهٔ اتصال‌ها را ببند. اثر راه‌دور و ثبت محلی تراکنش مشترک ندارند؛ تضمین ارسال دقیقاً یک بار ارائه نمی‌شود.',
-             'SQLite stores message text, raw events and peer data without encryption. The default `account.session.queue.sqlite3` is bound to that account. Close all connections before a simple file-copy backup. Remote effects and local receipts do not share a transaction; exactly-once sending is not guaranteed.', 'warning'),
+        note('SQLite متن پیام‌ها، raw رویدادها و اطلاعات مقصد را بدون رمزگذاری ذخیره می‌کند. پایگاه پیش‌فرض `account.eitaa.queue.sqlite3` به همان حساب متصل است. قبل از کپی سادهٔ پایگاه، همهٔ اتصال‌ها را ببند. اثر راه‌دور و ثبت محلی تراکنش مشترک ندارند؛ تضمین ارسال دقیقاً یک بار ارائه نمی‌شود.',
+             'SQLite stores message text, raw events and peer data without encryption. The default `account.eitaa.queue.sqlite3` is bound to that account. Close all connections before a simple file-copy backup. Remote effects and local receipts do not share a transaction; exactly-once sending is not guaranteed.', 'warning'),
     ]),
     page('profiles', 'account', 'اطلاعات کانال و اعضا', 'Profiles & members',
          'اطلاعات کامل، شمار اعضا و نقش‌ها در محدودهٔ دسترسی حساب.',
@@ -573,12 +582,14 @@ except SendMessageUncertainError as error:
          'پیاده‌سازی‌شده، تست محلی و مشاهدهٔ واقعی را جدا بخوان.',
          'Distinguish implementation, local testing and observed live behavior.', [
         heading('observed', 'آنچه در حساب واقعی بررسی شده', 'Observed live behavior'),
-        note('نسخهٔ آمادهٔ انتشار شامل پوشهٔ tests و ابزارهای تست زندهٔ توسعه نیست. ارجاع یادداشت‌های مرحله‌ای به آن فایل‌ها تاریخی است؛ نسخهٔ قبلی آن‌ها در تاریخچهٔ Git موجود است. نمونه‌های کاربردی examples همچنان همراه مخزن هستند.',
-             'The release source tree omits the development tests directory and live acceptance tools. References in phase notes describe historical coverage; earlier files remain in Git history. Runnable examples remain in the repository.'),
+        note('فایل‌های تست و ابزارهای موقت آزمون زنده پس از بررسی از نسخهٔ تحویلی حذف شده‌اند. نمونه‌ها و ابزار ساخت مستندات حفظ شده‌اند. نتیجهٔ تست‌ها پیش از پاک‌سازی در گزارش تحویل ثبت شده است؛ ارجاع‌های قدیمی به tests شرح شواهد تاریخی هستند.',
+             'Tests and temporary live acceptance tools were removed from the delivery after verification. Examples and the documentation builder remain. The delivery report records tests executed before cleanup; older references to tests describe historical evidence.'),
+        paragraph('اجرای تازهٔ کانال تست: ۸۴ بررسی موفق، بدون FAIL یا RECONCILED و ۳ مورد خارج از محدوده. ۳۶ تست آفلاین نیز موفق شدند؛ ساخت و نصب wheel و حفاظت سشن بدون رمز دستی بررسی شد. جزئیات و محدودیت‌ها در گزارش تحویل است.',
+                  'Fresh test-channel run: 84 checks passed, no FAIL or RECONCILED results, and three categories skipped. All 36 offline tests passed. Wheel build/install and passwordless session protection were verified. See the delivery report for scope and limitations.'),
         note('وضعیت این جدول گزارش بررسی‌های قبلی است؛ تغییر مستندات یا موفقیت تست آفلاین به معنی تأیید زندهٔ جدید نیست. پوشش یک متد در schema هم تضمین پشتیبانی کامل آن در SDK نیست.',
              'This table records earlier checks; documentation changes or passing offline tests do not establish new live acceptance. A method appearing in the schema does not establish full SDK support.'),
-        paragraph('این صفحه بر پایهٔ تست‌های کاربر و شواهد محلی در ۱۷ اکتبر ۲۰۲۶ است. تأیید یک مسیر در پیام‌های ذخیره‌شده، تأیید همهٔ مقصدها و مجوزها نیست.',
-                  'This page reflects user-run checks and local evidence as of October 17, 2026. Verifying a path in Saved Messages does not verify every destination or permission.'),
+        paragraph('جدول زیر شواهد تاریخی تا ۱۷ اکتبر ۲۰۲۶ را نگه می‌دارد؛ نتیجهٔ جدید بالای صفحه و گزارش تحویل، وضعیت فعلی کانال را نشان می‌دهند. تأیید یک مقصد، تأیید همهٔ مجوزها نیست.',
+                  'The following table retains historical evidence through October 17, 2026. The current channel results appear above and in the delivery report. Verifying one destination does not verify every permission.'),
         table(['بخش', 'تأییدشده', 'هنوز باقی است'], ['Area', 'Verified', 'Still outstanding'], [
             [bi('ورود', 'Login'), bi('OTP، ذخیره و reconnect بدون OTP', 'OTP, persistence and reconnect without OTP'), bi('رمز دوم، ابطال و انقضای زنده', 'Live password, revocation and expiry paths')],
             [bi('گفتگوها', 'Dialogs'), bi('فهرست و resolve عمومی', 'Listing and public resolution'), bi('چند صفحه و بایگانی زنده', 'Multiple live pages and archive')],
@@ -593,9 +604,10 @@ except SendMessageUncertainError as error:
         paragraph('آخرین اجرای مجموعهٔ اصلی: ۳۵۵ تست؛ ۳۵۴ موفق و یک skip به‌دلیل نبود مجوز symlink ویندوز. ۴۸ تست مربوط به صف و ۲۴ تست مربوط به شروع و ورود تعاملی است. سه تست فرایند فرزند را در مرز تراکنش متوقف می‌کنند. ساخت wheel و import آن در محیط ایزوله هم بررسی شده است. این اعداد شاهد تست ثبت‌شده‌اند و شمارندهٔ زنده نیستند.',
                   'The last recorded main-suite run executed 355 tests: 354 passed and one skipped because Windows could not create symlinks. Queue coverage contains 48 tests and startup/interactive login has 24 tests. Three tests terminate child processes at transaction boundaries. Wheel build and isolated imports were also checked. These are recorded observations, not live counters.'),
         heading('limits', 'محدودیت‌های فعلی', 'Current limitations'),
-        paragraph('رابط اصلی async است؛ wrapper همگام، مدیر چندحساب و ورود تعاملی خودکار روی سازنده ارائه نشده‌اند. صف و سشن رمزگذاری داخلی ندارند. آپلود نیمه‌تمام ادامهٔ پایدار ندارد. تضمین ارسال دقیقاً یک بار، بازیابی نامحدود تاریخچه و تأیید همهٔ RPCهای schema وجود ندارد.',
-                  'The main interface is async. There is no sync wrapper, account-pool manager or constructor-driven interactive login. Sessions and queues have no built-in encryption. Partial uploads have no durable resume. Exactly-once sending, unlimited history recovery and verification of all schema RPCs are not claimed.'),
+        paragraph('رابط اصلی async است؛ wrapper همگام و مدیر چندحساب ارائه نشده‌اند. سشن با حفاظت سیستم‌عامل رمزگذاری می‌شود؛ صف و checkpoint رمزگذاری نشده‌اند. آپلود نیمه‌تمام ادامهٔ پایدار ندارد. تضمین ارسال دقیقاً یک بار، بازیابی نامحدود تاریخچه و تأیید همهٔ RPCهای schema وجود ندارد.',
+                  'The main interface is async, without a sync wrapper or account-pool manager. Sessions use OS-backed encryption; queues and checkpoints are not encrypted. Partial uploads have no durable resume. Exactly-once sending, unlimited history recovery and verification of all schema RPCs are not claimed.'),
         dict(type='resources', links=[
+            dict(path='DELIVERY_CHECK.md', label=bi('گزارش تحویل و اجرای تازه', 'Delivery report and fresh acceptance run')),
             dict(path='ROADMAP.md', label=bi('نقشهٔ راه و پذیرش هر فاز', 'Roadmap and per-phase acceptance')),
             dict(path='ACCOUNT_STEP_10.md', label=bi('جزئیات تراکنش‌ها و بازیابی صف', 'Queue transaction and recovery details')),
             dict(path='PROTOCOL.md', label=bi('یادداشت پروتکل', 'Protocol notes')),
@@ -628,8 +640,8 @@ async def main():
         print(sent.id)
 
 asyncio.run(main())'''),
-        paragraph('مقصد باید برای همان توکن معتبر باشد. این مسیر به OTP و فایل account.session وصل نیست. خواندن عمومی به username نیاز دارد و شناسهٔ عددی تنها کافی نیست. حذف با backend توکن پشتیبانی نمی‌شود. ارسال با توکن هنوز تست زندهٔ ثبت‌شده ندارد.',
-                  'The destination must be valid for that token. This path does not use OTP or account.session. Public reads require a username, not just a numeric ID. Deletion is unsupported by the token backend. Token sending has no recorded live acceptance yet.'),
+        paragraph('مقصد باید برای همان توکن معتبر باشد. این مسیر به OTP و فایل account.eitaa وصل نیست. خواندن عمومی به username نیاز دارد و شناسهٔ عددی تنها کافی نیست. حذف با backend توکن پشتیبانی نمی‌شود. ارسال با توکن هنوز تست زندهٔ ثبت‌شده ندارد.',
+                  'The destination must be valid for that token. This path does not use OTP or account.eitaa. Public reads require a username, not just a numeric ID. Deletion is unsupported by the token backend. Token sending has no recorded live acceptance yet.'),
         note('متدهای AccountClient، مدل‌های AccountMessage و رویدادهای اکانت را با Client و Message قدیمی مخلوط نکن. کلاس Client در مرجع API جداگانه فهرست شده است.',
              'Do not mix AccountClient, AccountMessage or account events with the earlier Client and Message models. Client has its own class filter in the API reference.'),
     ]),

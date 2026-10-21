@@ -17,7 +17,7 @@
 from fnceitaa import AccountClient
 
 async def main():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         with client.queue() as queue:
             job = await queue.enqueue_message('self', 'سلام', key='reply:example:1')
             print(job.id, job.state)  # pending؛ هنوز پیامی ارسال نشده
@@ -26,7 +26,7 @@ async def main():
 ```
 
 صف را پیش از بسته‌شدن client ببندید. مسیر پیش‌فرض
-`account.session.queue.sqlite3` است؛ `client.queue(path)` مسیر دیگری می‌گیرد.
+`account.eitaa.queue.sqlite3` است؛ `client.queue(path)` مسیر دیگری می‌گیرد.
 پوشهٔ مقصد باید وجود داشته باشد. همان حساب، دستگاه و هویت اپلیکیشن باید صف را
 دوباره باز کنند؛ تعویض حساب/دستگاه با همان فایل رد می‌شود. تمدید توکن همین دستگاه
 مشکلی ایجاد نمی‌کند. توکن، OTP یا رمز در پایگاه صف ذخیره نمی‌شود، اما متن پیام،
@@ -108,7 +108,7 @@ receipt=...)` آن را ثبت کرد. تغییر وضعیت در audit باقی
 ## دریافت پایدار و پردازش inbox
 
 ```python
-async with AccountClient('account.session') as client:
+async with AccountClient('account.eitaa') as client:
     with client.queue() as queue:
         await queue.updates.initialize()
         # برای کانال موردنظر، پیش از تولید رویداد آزمایشی:
@@ -143,7 +143,7 @@ handlerهای دارای اثر خارجی دیگر باید راهکار idempo
 
 یک checkpoint تازه از وضعیت فعلی شروع می‌کند و به‌طور خودکار JSON قدیمیِ `.updates`
 را وارد نمی‌کند. واردکردن صریحِ یک checkpoint موجود فقط در DB تازه ممکن است:
-`await queue.import_checkpoint('account.session.updates')`. فایل اصلی دست‌نخورده
+`await queue.import_checkpoint('account.eitaa.updates')`. فایل اصلی دست‌نخورده
 می‌ماند. checkpoint SQLite و JSON را برای دریافت همان جریان همزمان جلو نبرید.
 محدودیت تاریخچهٔ سرور، watched channelها، `UpdateGapError` و replay گام ۶ تغییر
 نکرده‌اند؛ SQLite رویدادی را که سرور برنمی‌گرداند بازسازی نمی‌کند.

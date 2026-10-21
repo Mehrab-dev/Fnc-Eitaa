@@ -43,7 +43,7 @@ async def run(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--checkpoint')
     parser.add_argument('--once', action='store_true', help='Read and acknowledge one batch only')
     parser.add_argument('--common-only', action='store_true', help='Skip channel discovery; common chats still work')

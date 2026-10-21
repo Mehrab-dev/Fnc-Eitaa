@@ -31,7 +31,7 @@ async def inspect_account(args):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--live', action='store_true', help='Enable read-only requests with the saved session')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--limit', type=int, default=20, help='Maximum number of dialogs (default: 20)')
     parser.add_argument('--page-size', type=int, default=100, help='Requested page size (1..100)')
     parser.add_argument('--folder', choices=('all', 'main', 'archive'), default='all')

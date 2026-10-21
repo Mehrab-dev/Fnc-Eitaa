@@ -36,7 +36,7 @@ from pathlib import Path
 from fnceitaa import AccountClient, MediaItem
 
 async def use_media():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         message = await client.send_file('self', Path('examples/media_sample.txt'))
         downloaded = await client.download_media('self', message.id, 'downloaded_sample.txt')
         print(downloaded.size, downloaded.sha256)
@@ -88,6 +88,9 @@ async def use_media():
   می‌کند. پوشهٔ مقصد باید وجود داشته باشد. لینک نمادین به عنوان مقصد رد می‌شود.
 - SHA256 خروجی از بایت‌های دانلودشده محاسبه می‌شود؛ برای فایل ارسالی خودتان، آن را
   با هش فایل اصلی مقایسه کنید. این عدد تأیید هش مستقل از سرور نیست.
+- خواندن هر قطعهٔ دانلود در خطای اتصال یا HTTP 5xx، حداکثر سه بار با مکث‌های
+  ۱ و ۲ ثانیه تلاش می‌شود. خطای صریح RPC از جمله FLOOD_WAIT و RETRY_LIMIT،
+  و HTTP 4xx تکرار نمی‌شود. این رفتار شامل آپلود یا ارسال پیام نیست.
 - انقضای توکن در خواندن، یک بار فرصت تمدید و تکرار دارد؛ انقضای file reference
   یک بار با بازخوانی همان پیام و بررسی هویت رسانه رفع می‌شود. revoked شدن سشن
   باعث ورود خودکار یا OTP نمی‌شود. آپلود ناقص و دانلود نیمه‌کاره پس از restart
@@ -95,8 +98,8 @@ async def use_media():
 
 ## پذیرش زنده، قدم‌به‌قدم
 
-عامل توسعه برای این گام آپلود، ارسال یا دانلود زنده انجام نداده است؛ فقط اطلاعات
-پیام عکس موجود را برای عیب‌یابی و تأیید اصلاح بازخوانی کرده است. دستورات را
+نتیجهٔ آزمون جامع کانال با فایل‌های مصنوعی در [گزارش تحویل](DELIVERY_CHECK.md)
+ثبت می‌شود. برای آزمون دستی خودتان دستورات را
 یکی‌یکی اجرا کنید؛ برای عملیات بعدی، خروجی قبلی را بررسی کنید. بدون `--live` نمونه
 حتی سشن را باز نمی‌کند. در حالت live پیش‌نمایش می‌دهد و `yes` می‌خواهد.
 

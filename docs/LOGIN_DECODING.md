@@ -2,7 +2,7 @@
 
 The live login reached `auth.sentCode` (App, length 5) but failed with
 `Unexpected trailing TL data` after code submission. This does not establish
-whether the server accepted the login. No `account.session` was present when
+whether the server accepted the login. No `account.eitaa` was present when
 this report was first investigated.
 
 A later structural report identified a complete direct `auth.authorization`

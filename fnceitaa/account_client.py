@@ -84,7 +84,7 @@ class AccountClient:
     Use one client/process per session file.
     """
 
-    def __init__(self, session_path='account.session', *, api_id=WEB_API_ID,
+    def __init__(self, session_path='account.eitaa', *, api_id=WEB_API_ID,
                  api_hash=WEB_API_HASH, endpoint=DEFAULT_ENDPOINT, auto_login=True):
         if type(auto_login) is not bool:
             raise ValueError('auto_login must be a bool')

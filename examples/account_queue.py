@@ -115,7 +115,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', nargs='?', choices=('enqueue', 'status', 'send', 'poll', 'inbox', 'ack', 'recover', 'retry'), default='status')
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--database', help='Default: SESSION.queue.sqlite3')
     parser.add_argument('--peer', default='self')
     parser.add_argument('--load-dialogs', action='store_true')

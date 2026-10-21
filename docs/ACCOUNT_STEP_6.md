@@ -86,7 +86,7 @@ async def deleted_message(event):
     print('deleted', event.message_ids, event.peer)
 
 async def main():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         updates = client.updates()
         await updates.initialize()
         await updates.watch_dialogs()
@@ -109,7 +109,7 @@ ack، فراخوانی مجدد poll همان batch را برمی‌گرداند
 
 - اولین اجرا از وضعیت جاری شروع می‌کند؛ تاریخچهٔ قدیمی به‌عنوان پیام جدید بازپخش نمی‌شود.
   وضعیت جدید هر کانال نیز هنگام اولین `watch_channel` پایه‌گذاری می‌شود.
-- فایل پیش‌فرض `account.session.updates` مستقل از سشن است. تغییرات وضعیت با فایل
+- فایل پیش‌فرض `account.eitaa.updates` مستقل از سشن است. تغییرات وضعیت با فایل
   موقت، fsync و جایگزینی اتمیک ثبت می‌شوند. خطای نوشتن، خطای callback و لغو پیش از
   commit باعث جلو رفتن cursor نمی‌شوند. تغییر مشاهده‌شده توسط نویسندهٔ دیگر رد می‌شود؛
   این قفل بین‌پردازشی نیست: برای هر فایل فقط یک مصرف‌کننده/فرایند اجرا کنید.
@@ -130,7 +130,7 @@ ack، فراخوانی مجدد poll همان batch را برمی‌گرداند
   اگر سرور `differenceTooLong`، تغییر وضعیت غیرقابل ادامه یا عقب‌گرد cursor بدهد،
   `UpdateGapError` می‌گیریم و checkpoint جلو نمی‌رود. حذف‌های از‌دست‌رفته را نمی‌توان
   با تاریخچه بازسازی کرد. پس از بررسی دستی وضعیت فعلی با تاریخچه، تنها در صورت پذیرش
-  این شکاف، مسیر checkpoint تازه‌ای مثل `--checkpoint account.session.resnapshot`
+  این شکاف، مسیر checkpoint تازه‌ای مثل `--checkpoint account.eitaa.resnapshot`
   انتخاب کنید؛ این کار baseline تازه می‌سازد و شکاف گذشته را بازیابی نمی‌کند.
 - رویدادهای دیگر از مسیر `raw` در حافظه در دسترس‌اند. مثال CLI فقط سه نوع پیام را
   چاپ می‌کند. پیام رمزگذاری‌شده decrypt نمی‌شود؛ درخواست qts=-1 مطابق وب ایتاست.

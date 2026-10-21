@@ -56,7 +56,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', nargs='?', choices=('history', 'read', 'send'), default='history')
     parser.add_argument('--live', action='store_true', help='Enable requests using the existing account session')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--peer', default='self', help='Username, self or an account peer ID')
     parser.add_argument('--load-dialogs', action='store_true', help='Cache up to 1000 dialogs before resolving a numeric peer')
     parser.add_argument('--limit', type=int, default=5)

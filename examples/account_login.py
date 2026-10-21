@@ -71,7 +71,7 @@ async def login(session_path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--live', action='store_true', help='Enable interactive Eitaa login/reconnect')
-    parser.add_argument('--session', default='account.session', help='Account session file (default: account.session)')
+    parser.add_argument('--session', default='account.eitaa', help='Account session file (default: account.eitaa)')
     args = parser.parse_args()
     if not args.live:
         print('Offline mode. No network request and no session file created.')

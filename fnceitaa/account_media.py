@@ -20,7 +20,7 @@ from .account_messages import correlate_sent, message_id
 from .account_operations import operation_random_ids, _updates
 from .account_peers import peer_key
 from .enums import MediaKind
-from .errors import (AccountRPCError, AccountStateError, SessionError, SessionRevokedError,
+from .errors import (AccountRPCError, AccountStateError, AccountTransportError, SessionError, SessionRevokedError,
                      UnsupportedOperationError, UploadCancelledError, UploadInterruptedError)
 from .protocol import TLCodecError
 
@@ -344,6 +344,18 @@ class AccountMedia:
                                     tuple(item.caption for item in items), reply_to_msg_id, role='client')
 
     async def _download_part(self, owner, location, offset):
+        # Reading the same chunk is idempotent. Never apply these retries to
+        # uploads or message mutations, whose outcome may be uncertain.
+        for attempt in range(3):
+            try:
+                return await self._download_part_once(owner, location, offset)
+            except AccountTransportError as exc:
+                if attempt == 2 or (exc.status is not None and exc.status < 500):
+                    raise
+            # Release the client lock while waiting, and honour cancellation.
+            await asyncio.sleep(2 ** attempt)
+
+    async def _download_part_once(self, owner, location, offset):
         async with self.client._lock:
             self._check_owner(owner)
             for attempt in range(2):

@@ -72,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', nargs='?', choices=('edit', 'delete', 'forward', 'copy'), default='edit')
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--peer', default='self', help='Destination; quote "@username" in PowerShell')
     parser.add_argument('--from-peer', default='self', help='Source for forward/copy')
     parser.add_argument('--message-id', type=int, nargs='+', help='One ID, or up to 100 IDs for delete/forward')

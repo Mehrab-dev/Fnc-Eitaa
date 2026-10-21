@@ -274,9 +274,20 @@ class AccountUpdates:
                     seen.popitem(last=False)
 
         updates = list(result.get('other_updates', []))
-        # Difference new_messages are full messages; no synthetic text snapshots.
-        updates = [{'_': 'updateNewChannelMessage' if channel_id else 'updateNewMessage',
-                    'message': item} for item in result.get('new_messages', [])] + updates
+        # Eitaa also returns edited full messages in new_messages. Classify
+        # those as edits only after this consumer has delivered the original
+        # new-message identity; a first delivery remains new even if edited.
+        difference_updates = []
+        for item in result.get('new_messages', []):
+            kind = 'updateNewChannelMessage' if channel_id else 'updateNewMessage'
+            if isinstance(item, dict) and item.get('_') in ('message', 'messageService'):
+                key = peer_key(item.get('peer_id'))
+                was_delivered = _fingerprint(['new', key[0].value, key[1], item.get('id')]) in seen
+                if was_delivered and 'edit_date' in item:
+                    _position(item['edit_date'])
+                    kind = 'updateEditChannelMessage' if key[0] == PeerKind.CHANNEL else 'updateEditMessage'
+            difference_updates.append({'_': kind, 'message': item})
+        updates = difference_updates + updates
         for update in updates:
             if not isinstance(update, dict) or not isinstance(update.get('_'), str):
                 raise TLCodecError('Invalid difference update')
@@ -307,7 +318,10 @@ class AccountUpdates:
                 kind = 'edit' if 'Edit' in name else 'new'
                 identity = [kind, key[0].value, key[1], message.id]
                 if kind == 'edit':
-                    identity.append([update.get('pts'), raw_message])
+                    # The same edit may appear as an explicit update and as a
+                    # full difference message. Transport pts must not cause a
+                    # duplicate event for identical message content.
+                    identity.append(raw_message)
                 emit(kind, identity, peer, message, (message.id,), update)
             elif name in ('updateDeleteMessages', 'updateDeleteChannelMessages'):
                 channel = update.get('channel_id') if name == 'updateDeleteChannelMessages' else None

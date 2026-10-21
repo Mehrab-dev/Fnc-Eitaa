@@ -184,6 +184,8 @@ cython_debug/
 research/*.js
 # Account credentials and durable queue databases
 *.session
+*.eitaa
+*.eitaa.*
 *.session.*
 *.session-journal
 *.session-wal

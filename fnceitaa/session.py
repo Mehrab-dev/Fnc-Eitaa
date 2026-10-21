@@ -1,4 +1,4 @@
-"""Versioned account credentials. Atomic replacement, never OTP/password storage."""
+"""Automatically protected .eitaa credentials with atomic replacement."""
 from dataclasses import asdict, dataclass, field
 import hashlib
 import json
@@ -8,8 +8,27 @@ import stat
 import tempfile
 
 from .errors import SessionError
+from .session_crypto import SessionProtection
 
 MAX_SESSION_BYTES = 32768
+MAX_FILE_BYTES = 65536
+
+
+def session_path(path):
+    path = Path(path).absolute()
+    if path.suffix.lower() == '.session':
+        return path.with_suffix('.eitaa')
+    return path if path.suffix.lower() == '.eitaa' else Path(str(path) + '.eitaa')
+
+
+def _parse(data):
+    try:
+        value = json.loads(data)
+        if not isinstance(value, dict) or set(value) != set(AccountSession.__dataclass_fields__):
+            raise ValueError
+        return AccountSession(**value)
+    except (TypeError, ValueError, UnicodeError):
+        raise SessionError('Malformed or unsupported account session') from None
 
 
 @dataclass(frozen=True)
@@ -34,13 +53,15 @@ class AccountSession:
 class SessionStore:
     """One active writer per file. Windows files inherit the parent's ACL.
 
-    Credentials are plaintext JSON, not encrypted. Synchronous small writes keep
+    Credentials use automatic OS protection, without a password prompt.
+    Synchronous small writes keep
     cancellation from interrupting the replace/commit boundary. An observed file
     change is rejected, but this is not a multiprocess locking mechanism.
     """
 
     def __init__(self, path):
-        self.path = Path(path).absolute()
+        self.path = session_path(path)
+        self._protection = SessionProtection()
         self._digest = None
         self._loaded = False
 
@@ -51,8 +72,8 @@ class SessionStore:
             with self.path.open('rb') as stream:
                 if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
                     raise SessionError('Session path must be a regular file')
-                data = stream.read(MAX_SESSION_BYTES + 1)
-            if len(data) > MAX_SESSION_BYTES:
+                data = stream.read(MAX_FILE_BYTES + 1)
+            if len(data) > MAX_FILE_BYTES:
                 raise SessionError('Account session exceeds size limit')
             return data
         except FileNotFoundError:
@@ -61,18 +82,17 @@ class SessionStore:
             raise SessionError('Cannot read account session') from None
 
     def load(self):
+        self._loaded = False
         data = self._read()
         if data is None:
+            if self.path.with_suffix('.session').exists():
+                raise SessionError('Legacy plaintext session found; run '
+                                   'python -m fnceitaa.session_migrate SOURCE.session')
+            self._protection.prepare()
             self._digest = None
             self._loaded = True
             return None
-        try:
-            value = json.loads(data)
-            if not isinstance(value, dict) or set(value) != set(AccountSession.__dataclass_fields__):
-                raise ValueError
-            session = AccountSession(**value)
-        except (TypeError, ValueError, UnicodeError):
-            raise SessionError('Malformed or unsupported account session') from None
+        session = _parse(self._protection.open(data))
         self._digest = hashlib.sha256(data).digest()
         self._loaded = True
         return session
@@ -87,6 +107,9 @@ class SessionStore:
         data = (json.dumps(asdict(session), ensure_ascii=True, sort_keys=True) + '\n').encode()
         if len(data) > MAX_SESSION_BYTES:
             raise SessionError('Account session exceeds size limit')
+        data = self._protection.seal(data)
+        if len(data) > MAX_FILE_BYTES:
+            raise SessionError('Protected account session exceeds size limit')
         temporary = None
         try:
             fd, temporary = tempfile.mkstemp(prefix='.' + self.path.name + '.', suffix='.tmp',
@@ -105,3 +128,27 @@ class SessionStore:
                     os.unlink(temporary)
                 except FileNotFoundError:
                     pass
+
+
+def migrate_legacy_session(source, destination=None):
+    """Protect legacy plaintext offline, retaining the source and existing files."""
+    source = Path(source).absolute()
+    destination = session_path(destination if destination is not None else source.with_suffix('.eitaa'))
+    if source.resolve() == destination.resolve():
+        raise SessionError('Source and destination must differ')
+    if destination.exists() or destination.is_symlink():
+        raise SessionError('Destination already exists; refusing overwrite')
+    # Reuse the bounded file reader without interpreting the old extension.
+    reader = SessionStore(destination)
+    reader.path = source
+    data = reader._read()
+    if data is None:
+        raise SessionError('Legacy session file not found')
+    if len(data) > MAX_SESSION_BYTES:
+        raise SessionError('Legacy account session exceeds size limit')
+    session = _parse(data)
+    store = SessionStore(destination)
+    store._protection.prepare()
+    store._loaded = True
+    store.save(session)
+    return destination

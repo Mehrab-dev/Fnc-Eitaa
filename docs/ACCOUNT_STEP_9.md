@@ -33,7 +33,7 @@ access hash واقعی همان اکانت قبلاً از dialogs یا پاسخ
 from fnceitaa import AccountClient
 
 async def inspect():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         me = await client.get_full_user()
         print(me.common_chats_count)
         channel = await client.get_chat_info('@eitaa')

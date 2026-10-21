@@ -53,7 +53,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', nargs='?', choices=('info', 'members', 'member'), default='info')
     parser.add_argument('--live', action='store_true')
-    parser.add_argument('--session', default='account.session')
+    parser.add_argument('--session', default='account.eitaa')
     parser.add_argument('--peer', default='self', help='Quote "@username" in PowerShell')
     parser.add_argument('--participant', default='self', help='For member: self, username, cached typed ID')
     parser.add_argument('--load-dialogs', action='store_true')

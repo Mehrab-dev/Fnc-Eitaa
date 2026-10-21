@@ -30,7 +30,7 @@ import asyncio
 from fnceitaa import AccountClient
 
 async def main():
-    async with AccountClient('account.session') as client:
+    async with AccountClient('account.eitaa') as client:
         myself = await client.resolve_peer('self')
         channel = await client.resolve_peer('@eitaa')
         print(channel.kind.value, channel.id)
