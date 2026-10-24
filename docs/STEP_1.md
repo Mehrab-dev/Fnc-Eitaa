@@ -16,7 +16,7 @@
 | قابلیت | کاربرد | خروجی |
 | --- | --- | --- |
 | `send_message(peer, text)` | ارسال متن؛ پایهٔ `Message.reply()` | `Message` با شناسهٔ تأییدشدهٔ سرور |
-| `send_file(peer, file_path, caption=...)` | ارسال فایل یا عکس از مسیر محلی | `Message` همراه `Media` از نوع عمومی `DOCUMENT` |
+| `send_file(chat_id, file, caption)` | ارسال فایل یا عکس از مسیر محلی؛ کپشن اجباری، رشتهٔ خالی مجاز | `Message` همراه `Media` از نوع عمومی `DOCUMENT` |
 | `get_chat_info(peer)` | خواندن نام، توضیح، تصویر و اطلاعات نمایشی صفحهٔ عمومی | دیکشنری اطلاعات |
 | `get_info(peer)` | نام سازگار برای همان قابلیت قبلی | دیکشنری اطلاعات |
 | `get_message(peer, message_id)` | خواندن یک پست مشخص از صفحهٔ عمومی | `Message` یا `None` اگر یافت نشود |

@@ -111,20 +111,20 @@ class Client:
         return Message(id=msg_id, peer=peer, text=res.get('message_text', res.get('text', '')),
                        media=media, raw=res, _client=self)
 
-    async def get_chat_info(self, peer: PeerLike) -> dict:
-        resolved = self._public_peer(peer)
+    async def get_chat_info(self, chat_id: PeerLike) -> dict:
+        resolved = self._public_peer(chat_id)
         res = await self._call(Eitaa.get_info, resolved.username)
         if not isinstance(res, dict) or not res or res.get('ok') is False:
             raise APIRequestError('No public chat information returned')
         return res
 
-    async def get_info(self, peer: PeerLike) -> dict:
-        return await self.get_chat_info(peer)
+    async def get_info(self, chat_id: PeerLike) -> dict:
+        return await self.get_chat_info(chat_id)
 
-    async def get_message(self, peer: PeerLike, message_id: int) -> Optional[Message]:
+    async def get_message(self, chat_id: PeerLike, message_id: int) -> Optional[Message]:
         if isinstance(message_id, bool) or not isinstance(message_id, int) or message_id <= 0:
             raise ValueError('message_id must be a positive integer')
-        resolved = self._public_peer(peer)
+        resolved = self._public_peer(chat_id)
         res = await self._call(Eitaa.get_message, resolved.username, message_id)
         if res is None:
             return None
@@ -132,10 +132,10 @@ class Client:
             raise APIRequestError('Invalid public message response')
         return self._public_message(res, resolved, message_id)
 
-    async def send_message(self, peer: PeerLike, text: str,
+    async def send_message(self, chat_id: PeerLike, text: str,
                            reply_to_msg_id: Optional[int] = None) -> Message:
         engine = self._require_engine()
-        resolved = self._resolve_peer(peer)
+        resolved = self._resolve_peer(chat_id)
         if not isinstance(text, str) or not text.strip():
             raise ValueError('text must be a nonempty string')
         self._validate_reply_id(reply_to_msg_id)
@@ -143,14 +143,14 @@ class Client:
                                text=text, reply_to_message_id=reply_to_msg_id)
         return self._sent_message(res, resolved, text, reply_to_msg_id)
 
-    async def send_file(self, peer: PeerLike, file_path: str, caption: Optional[str] = None,
+    async def send_file(self, chat_id: PeerLike, file: str | Path, caption: str,
                         reply_to_msg_id: Optional[int] = None) -> Message:
         engine = self._require_engine()
-        resolved = self._resolve_peer(peer)
+        resolved = self._resolve_peer(chat_id)
         self._validate_reply_id(reply_to_msg_id)
-        if caption is not None and not isinstance(caption, str):
-            raise ValueError('caption must be a string or None')
-        path = Path(file_path)
+        if not isinstance(caption, str):
+            raise ValueError('caption must be a string')
+        path = Path(file)
         if not path.is_file():
             raise FileNotFoundError(path)
         res = await self._call(engine.send_file, chat_id=resolved.username or resolved.id,
@@ -159,7 +159,7 @@ class Client:
         return self._sent_message(res, resolved, caption or '', reply_to_msg_id,
                                   Media(MediaKind.DOCUMENT, str(path), caption=caption))
 
-    async def delete_messages(self, peer: PeerLike, message_ids: List[int]) -> bool:
+    async def delete_messages(self, chat_id: PeerLike, message_ids: List[int]) -> bool:
         raise UnsupportedOperationError('Delete requires the future account transport')
 
     async def run_polling(self, targets: Union[str, List[str]], interval: float = 2.0):

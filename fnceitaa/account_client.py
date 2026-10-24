@@ -7,6 +7,7 @@ import re
 import secrets
 import time
 import unicodedata
+from pathlib import Path
 from typing import Any
 
 from .account import AccountHTTPTransport, DEFAULT_ENDPOINT
@@ -130,51 +131,69 @@ class AccountClient:
         from .account_queue import AccountQueue
         return AccountQueue(self, path)
 
-    async def get_chat_info(self, peer):
-        return await self.profiles().get_chat_info(peer)
+    async def get_chat_info(self, chat_id):
+        return await self.profiles().get_chat_info(chat_id)
 
-    async def get_full_user(self, peer='self'):
-        return await self.profiles().get_full_user(peer)
+    async def get_full_user(self, chat_id='self'):
+        return await self.profiles().get_full_user(chat_id)
 
-    async def get_full_group(self, peer):
-        return await self.profiles().get_full_group(peer)
+    async def get_full_group(self, chat_id):
+        return await self.profiles().get_full_group(chat_id)
 
-    async def get_full_channel(self, peer):
-        return await self.profiles().get_full_channel(peer)
+    async def get_full_channel(self, chat_id):
+        return await self.profiles().get_full_channel(chat_id)
 
-    async def get_member_count(self, peer):
-        return await self.profiles().get_member_count(peer)
+    async def get_member_count(self, chat_id):
+        return await self.profiles().get_member_count(chat_id)
 
-    async def get_members_page(self, peer, **kwargs):
-        return await self.profiles().get_members_page(peer, **kwargs)
+    async def get_members_page(self, chat_id, *, offset=0, limit=100, filter='recent', query=''):
+        return await self.profiles().get_members_page(chat_id, offset=offset, limit=limit, filter=filter, query=query)
 
-    def iter_members(self, peer, **kwargs):
-        return self.profiles().iter_members(peer, **kwargs)
+    def iter_members(self, chat_id, *, limit=100, page_size=100, filter='recent', query=''):
+        return self.profiles().iter_members(chat_id, limit=limit, page_size=page_size, filter=filter, query=query)
 
-    async def get_member(self, peer, participant='self'):
-        return await self.profiles().get_member(peer, participant)
+    async def get_member(self, chat_id, participant='self'):
+        return await self.profiles().get_member(chat_id, participant)
 
-    async def upload_file(self, file, **kwargs):
-        return await self.media().upload_file(file, **kwargs)
+    async def upload_file(self, file, *, chat_id='self', filename=None, progress=None):
+        return await self.media().upload_file(file, chat_id=chat_id, filename=filename, progress=progress)
 
-    async def send_file(self, peer, file, **kwargs):
+    async def send_file(self, chat_id, file, caption, *, kind='document', filename=None,
+                        mime_type=None, duration=None, width=None, height=None,
+                        silent=False, reply_to_msg_id=None, random_id=None, progress=None):
         """Send a document by default; accepts a local path, bytes or UploadedFile."""
-        return await self.media().send_file(peer, file, **kwargs)
+        return await self.media().send_file(chat_id, file, caption, kind=kind, filename=filename,
+            mime_type=mime_type, duration=duration, width=width, height=height, silent=silent,
+            reply_to_msg_id=reply_to_msg_id, random_id=random_id, progress=progress)
 
-    async def send_photo(self, peer, file, **kwargs):
-        return await self.media().send_photo(peer, file, **kwargs)
+    async def send_photo(self, chat_id, photo: str | Path, caption: str, *, filename=None,
+                         silent=False, reply_to_msg_id=None, random_id=None, progress=None):
+        """Send a local JPEG/PNG with a caption; use '' for no caption."""
+        return await self.media().send_photo(chat_id, photo, caption, filename=filename,
+            silent=silent, reply_to_msg_id=reply_to_msg_id, random_id=random_id, progress=progress)
 
-    async def send_video(self, peer, file, *, duration, width, height, **kwargs):
-        return await self.media().send_video(peer, file, duration=duration, width=width, height=height, **kwargs)
+    async def send_video(self, chat_id, video: str | Path, caption: str, *, duration=None,
+                         width=None, height=None, filename=None, mime_type=None,
+                         silent=False, reply_to_msg_id=None, random_id=None, progress=None):
+        """Send a local video; missing duration and dimensions are read from it."""
+        return await self.media().send_video(chat_id, video, caption, duration=duration,
+            width=width, height=height, filename=filename, mime_type=mime_type, silent=silent,
+            reply_to_msg_id=reply_to_msg_id, random_id=random_id, progress=progress)
 
-    async def send_voice(self, peer, file, *, duration, **kwargs):
-        return await self.media().send_voice(peer, file, duration=duration, **kwargs)
+    async def send_voice(self, chat_id, voice: str | Path, caption: str, *, duration=None,
+                         filename=None, silent=False, reply_to_msg_id=None,
+                         random_id=None, progress=None):
+        """Send local Ogg/Opus voice; missing duration is read from the file."""
+        return await self.media().send_voice(chat_id, voice, caption, duration=duration,
+            filename=filename, silent=silent, reply_to_msg_id=reply_to_msg_id,
+            random_id=random_id, progress=progress)
 
-    async def send_album(self, peer, items, **kwargs):
-        return await self.media().send_album(peer, items, **kwargs)
+    async def send_album(self, chat_id, items, *, silent=False, reply_to_msg_id=None, random_ids=None):
+        return await self.media().send_album(chat_id, items, silent=silent,
+            reply_to_msg_id=reply_to_msg_id, random_ids=random_ids)
 
-    async def download_media(self, peer, message_id, destination, **kwargs):
-        return await self.media().download_media(peer, message_id, destination, **kwargs)
+    async def download_media(self, chat_id, message_id, destination, **kwargs):
+        return await self.media().download_media(chat_id, message_id, destination, **kwargs)
 
     def __repr__(self):
         return f'AccountClient(authorized={self.is_authorized})'
@@ -539,7 +558,7 @@ class AccountClient:
         peer.to_input_peer()
         return peer
 
-    async def resolve_peer(self, peer: str | int | AccountPeer) -> AccountPeer:
+    async def resolve_peer(self, chat_id: str | int | AccountPeer) -> AccountPeer:
         """Resolve self, username, cached ID, or typed user:/chat:/channel:ID.
 
         Bare IDs are never guessed as a particular peer type. Access hashes
@@ -547,16 +566,16 @@ class AccountClient:
         """
         async with self._lock:
             self._require_authorized()
-            if isinstance(peer, AccountPeer):
-                if peer.is_self and peer.id != self._current_session().user_id:
+            if isinstance(chat_id, AccountPeer):
+                if chat_id.is_self and chat_id.id != self._current_session().user_id:
                     raise PeerResolveError('Self peer belongs to a different account')
-                peer.to_input_peer()
-                return peer
-            if isinstance(peer, str):
-                peer = peer.strip()
-                if peer.lower() in ('me', 'self'):
+                chat_id.to_input_peer()
+                return chat_id
+            if isinstance(chat_id, str):
+                chat_id = chat_id.strip()
+                if chat_id.lower() in ('me', 'self'):
                     return AccountPeer(self._current_session().user_id, is_self=True)
-                typed = re.fullmatch(r'(user|chat|channel):([1-9][0-9]{0,18})', peer)
+                typed = re.fullmatch(r'(user|chat|channel):([1-9][0-9]{0,18})', chat_id)
                 if typed:
                     kind, identifier = PeerKind(typed[1]), int(typed[2])
                     if not positive_id(identifier):
@@ -566,7 +585,7 @@ class AccountClient:
                     if kind == PeerKind.USER and identifier == self._current_session().user_id:
                         return AccountPeer(identifier, is_self=True)
                     return self._cached_peer((kind, identifier))
-                username = peer.removeprefix('@')
+                username = chat_id.removeprefix('@')
                 if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,63}', username):
                     raise ValueError('Use a username, self, a cached positive ID, or kind:ID')
                 value = (await self._read_rpc('contacts.resolveUsername', {'username': username.lower()})).result
@@ -579,11 +598,11 @@ class AccountClient:
                     raise TLCodecError('Username response omitted the resolved identity')
                 self._cache_entities(entities)
                 return self._cached_peer(key)
-            if not positive_id(peer):
+            if not positive_id(chat_id):
                 raise ValueError('Peer ID must be a positive signed 64-bit integer')
-            candidates = [value for (_, identifier), value in self._peers.items() if identifier == peer]
-            if peer == self._current_session().user_id and not any(p.kind == PeerKind.USER for p in candidates):
-                candidates.append(AccountPeer(peer, is_self=True))
+            candidates = [value for (_, identifier), value in self._peers.items() if identifier == chat_id]
+            if chat_id == self._current_session().user_id and not any(p.kind == PeerKind.USER for p in candidates):
+                candidates.append(AccountPeer(chat_id, is_self=True))
             if len(candidates) != 1:
                 raise PeerResolveError('Unknown or ambiguous peer ID; use username or kind:ID')
             candidates[0].to_input_peer()
@@ -699,11 +718,11 @@ class AccountClient:
         self._cache_entities(value['users'] + value['chats'])
         return value['messages']
 
-    async def get_message(self, peer: str | int | AccountPeer, message_id: int) -> AccountMessage | None:
+    async def get_message(self, chat_id: str | int | AccountPeer, message_id: int) -> AccountMessage | None:
         """Read one message. Empty/deleted or another peer's message returns None."""
         if type(message_id) is not int or not 0 < message_id < 2**31:
             raise ValueError('message_id must be a positive signed 32-bit integer')
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         params: dict[str, Any] = {'id': [{'_': 'inputMessageID', 'id': message_id}]}
         method = 'messages.getMessages'
@@ -729,14 +748,14 @@ class AccountClient:
                 return None
             return parse_message(value, resolved, self._peers)
 
-    async def get_history_page(self, peer: str | int | AccountPeer, *, limit: int = 100,
+    async def get_history_page(self, chat_id: str | int | AccountPeer, *, limit: int = 100,
                                offset_id: int = 0) -> HistoryPage:
         """Read newest first, strictly before offset_id (zero starts at newest)."""
         if type(limit) is not int or not 1 <= limit <= 100:
             raise ValueError('History page limit must be between 1 and 100')
         if type(offset_id) is not int or not 0 <= offset_id < 2**31:
             raise ValueError('offset_id must be a nonnegative signed 32-bit integer')
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         params = {'peer': resolved.to_input_peer(), 'offset_id': offset_id,
                   'offset_date': 0, 'add_offset': 0, 'limit': limit,
@@ -764,7 +783,7 @@ class AccountClient:
             ordered = tuple(messages[key] for key in sorted(messages, reverse=True))
             return HistoryPage(resolved, ordered, count, next_offset)
 
-    async def iter_history(self, peer: str | int | AccountPeer, *, limit: int | None = None,
+    async def iter_history(self, chat_id: str | int | AccountPeer, *, limit: int | None = None,
                            page_size: int = 100, offset_id: int = 0):
         """Yield newest first; fetch pages lazily and never mark messages read."""
         if limit is not None and (type(limit) is not int or limit < 0):
@@ -775,7 +794,7 @@ class AccountClient:
             raise ValueError('Invalid history offset_id')
         if limit == 0:
             return
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         yielded = 0
         while limit is None or yielded < limit:
@@ -793,9 +812,9 @@ class AccountClient:
                 raise TLCodecError('History pagination did not advance')
             offset_id = page.next_offset_id
 
-    async def get_history(self, peer: str | int | AccountPeer, limit: int = 100,
+    async def get_history(self, chat_id: str | int | AccountPeer, limit: int = 100,
                           *, offset_id: int = 0) -> list[AccountMessage]:
-        return [message async for message in self.iter_history(peer, limit=limit, offset_id=offset_id)]
+        return [message async for message in self.iter_history(chat_id, limit=limit, offset_id=offset_id)]
 
     async def _verified_operation_messages(self, peer, identifiers):
         """Read before writing; common message IDs are not scoped by peer on wire.
@@ -842,7 +861,7 @@ class AccountClient:
         except Exception:
             raise MessageOperationUncertainError(operation, identifiers, random_ids) from None
 
-    async def edit_message(self, peer: str | int | AccountPeer, message_id: int, text: str, *,
+    async def edit_message(self, chat_id: str | int | AccountPeer, message_id: int, text: str, *,
                            no_webpage: bool = False) -> AccountMessage:
         """Replace text/caption and clear styled entities; no automatic retry.
 
@@ -853,7 +872,7 @@ class AccountClient:
         identifiers = validate_ids([message_id])
         if type(no_webpage) is not bool:
             raise ValueError('no_webpage must be bool')
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         params = dict(peer=resolved.to_input_peer(), id=message_id, message=text,
                       entities=[], no_webpage=no_webpage)
@@ -862,7 +881,7 @@ class AccountClient:
             return await self._message_operation('edit', 'messages.editMessage', params, identifiers, (),
                 lambda value: correlate_edit(value, resolved, message_id, text, self._peers))
 
-    async def delete_messages(self, peer: str | int | AccountPeer, message_ids, *,
+    async def delete_messages(self, chat_id: str | int | AccountPeer, message_ids, *,
                               revoke: bool = False) -> DeletedMessages:
         """Delete 1..100 verified messages in one RPC, without automatic splitting.
 
@@ -873,7 +892,7 @@ class AccountClient:
         identifiers = validate_ids(message_ids)
         if type(revoke) is not bool:
             raise ValueError('revoke must be bool')
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         method = 'messages.deleteMessages'
         params: dict[str, Any] = {'id': list(identifiers), 'revoke': revoke}
@@ -910,37 +929,37 @@ class AccountClient:
                 lambda value: correlate_forward(value, source, destination, identifiers, tokens,
                                                 self._peers, is_copy=is_copy))
 
-    async def forward_messages(self, to_peer: str | int | AccountPeer,
-                               from_peer: str | int | AccountPeer, message_ids, *,
+    async def forward_messages(self, chat_id: str | int | AccountPeer,
+                               from_chat_id: str | int | AccountPeer, message_ids, *,
                                random_ids=None, silent: bool = False) -> tuple[ForwardedMessage, ...]:
         """Forward 1..100 source messages; receipts preserve input order.
 
         Supply random_ids if recovery across a crash matters. No write retries,
         automatic splitting, or server deduplication lifetime is promised.
         """
-        return await self._forward_messages(to_peer, from_peer, message_ids,
+        return await self._forward_messages(chat_id, from_chat_id, message_ids,
             random_ids=random_ids, silent=silent, is_copy=False)
 
-    async def forward_message(self, to_peer: str | int | AccountPeer,
-                              from_peer: str | int | AccountPeer, message_id: int, *,
+    async def forward_message(self, chat_id: str | int | AccountPeer,
+                              from_chat_id: str | int | AccountPeer, message_id: int, *,
                               random_id: int | None = None, silent: bool = False) -> ForwardedMessage:
-        result = await self.forward_messages(to_peer, from_peer, [message_id],
+        result = await self.forward_messages(chat_id, from_chat_id, [message_id],
             random_ids=None if random_id is None else [random_id], silent=silent)
         return result[0]
 
-    async def copy_message(self, to_peer: str | int | AccountPeer,
-                           from_peer: str | int | AccountPeer, message_id: int, *,
+    async def copy_message(self, chat_id: str | int | AccountPeer,
+                           from_chat_id: str | int | AccountPeer, message_id: int, *,
                            random_id: int | None = None, silent: bool = False) -> ForwardedMessage:
         """Server-side forward with drop_author=True; never download/reupload.
 
         Server restrictions still apply. Album grouping and media transfer are
         separate features. A receipt may omit the full destination message.
         """
-        result = await self._forward_messages(to_peer, from_peer, [message_id],
+        result = await self._forward_messages(chat_id, from_chat_id, [message_id],
             random_ids=None if random_id is None else [random_id], silent=silent, is_copy=True)
         return result[0]
 
-    async def send_message(self, peer: str | int | AccountPeer, text: str, *,
+    async def send_message(self, chat_id: str | int | AccountPeer, text: str, *,
                            reply_to_msg_id: int | None = None, silent: bool = False,
                            no_webpage: bool = False, random_id: int | None = None) -> AccountMessage:
         """Send one plain-text message, once. No splitting or automatic resend.
@@ -966,7 +985,7 @@ class AccountClient:
             random_id = secrets.randbits(63) or 1
         if type(random_id) is not int or not -2**63 <= random_id < 2**63 or random_id == 0:
             raise ValueError('random_id must be a nonzero signed 64-bit integer')
-        resolved = await self.resolve_peer(peer)
+        resolved = await self.resolve_peer(chat_id)
         owner = self._current_session().user_id
         params = {'peer': resolved.to_input_peer(), 'message': text, 'random_id': random_id,
                   'silent': silent, 'no_webpage': no_webpage}

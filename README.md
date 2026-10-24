@@ -1,5 +1,46 @@
 # Fnc-Eitaa
 
+## API سادهٔ async — نسخهٔ 0.2.0
+
+در متدهای عمومی مقصد با نام `chat_id` مشخص می‌شود. برای ارسال رسانه فقط
+`chat_id`، مسیر فایل و `caption` اجباری هستند؛ برای بدون کپشن، `caption=""` بدهید:
+
+```python
+import asyncio
+from pathlib import Path
+from fnceitaa import AccountClient
+
+async def main():
+    async with AccountClient("account.eitaa") as client:
+        await client.send_video(
+            chat_id="self", video=Path("clip.mp4"), caption="ویدیوی من"
+        )
+        await client.send_photo(chat_id="self", photo="photo.jpg", caption="عکس")
+        await client.send_voice(chat_id="self", voice="voice.ogg", caption="")
+        await client.send_file(chat_id="self", file="report.pdf", caption="گزارش")
+        await client.send_message(chat_id="self", text="سلام", reply_to_msg_id=123)
+
+asyncio.run(main())
+```
+
+`duration`، `width` و `height` ویدیو و `duration` ویس دیگر اجباری نیستند.
+مشخصات تعیین‌نشده از فایل واقعی با PyAV خوانده می‌شوند؛ نصب عادی کتابخانه PyAV
+را هم نصب می‌کند. عملیات بررسی فایل خارج از حلقهٔ async اجرا می‌شود. فایل نامعتبر
+قبل از آپلود رد می‌شود و تبدیل فرمت انجام نمی‌شود. ویس باید Ogg/Opus باشد.
+
+**مهاجرت از 0.1:** پارامترهای `peer=` و `to_peer=` به `chat_id=` و
+`from_peer=` در فوروارد/کپی به `from_chat_id=` تغییر کرده‌اند؛ نام متد
+`resolve_peer` و مدل‌های Peer تغییری نکرده است. در ارسال عکس از `photo=`،
+ویدیو از `video=`، ویس از `voice=` و سند از `file=` استفاده کنید. کپشن ارسال
+مستقیم رسانه اکنون باید صریحاً داده شود؛ آرگومان‌های positional مقصد و فایل همچنان
+همان ترتیب را دارند و کپشن آرگومان سوم است. گزینه‌های ریپلای، silent، random_id،
+progress و بازنویسی مشخصات رسانه اختیاری هستند. API سطح پروتکل و دادهٔ صف تغییر
+نکرده است. استفادهٔ دوباره از `UploadedFile` ویدیو/ویس به مشخصات صریح نیاز دارد،
+چون آن شیء فقط header فایل را نگه می‌دارد؛ برای بررسی خودکار مسیر اصلی را بدهید.
+
+نام پکیج و import همچنان `fnceitaa` است؛ نام پوشهٔ checkout آن را تغییر نمی‌دهد.
+`Client` مخصوص ایتایار/صفحات عمومی است؛ متدهای مدیای حساب بالا متعلق به `AccountClient` هستند.
+
 بررسی تحویل ۲۱ اکتبر ۲۰۲۶: ۸۴ بررسی کانال موفق، صفر خطای ثبت‌شده،
 ۳ مورد خارج از محدوده و ۳۶ تست آفلاین موفق.
 [گزارش تحویل، راه‌اندازی و محدودهٔ تأیید](docs/DELIVERY_CHECK.md) را ببینید.

@@ -23,6 +23,7 @@ from .enums import MediaKind
 from .errors import (AccountRPCError, AccountStateError, AccountTransportError, SessionError, SessionRevokedError,
                      UnsupportedOperationError, UploadCancelledError, UploadInterruptedError)
 from .protocol import TLCodecError
+from .media_metadata import media_metadata
 
 UPLOAD_ENDPOINT = 'https://alzheimer.eitaa.com/eitaa/'
 DOWNLOAD_ENDPOINT = 'https://mohsen.eitaa.com/eitaa/'
@@ -177,12 +178,13 @@ class AccountMedia:
         if not isinstance(mime, str) or len(mime) > 255 or not re.fullmatch(r'[A-Za-z0-9!#$&^_.+\-]+/[A-Za-z0-9!#$&^_.+\-]+', mime):
             raise ValueError('Invalid media MIME type')
         attributes = [{'_': 'documentAttributeFilename', 'file_name': source.name}]
+        if kind == MediaKind.VOICE and (not source.header.startswith(b'OggS') or b'OpusHead' not in source.header):
+            raise ValueError('Voice requires Ogg/Opus; renaming a file does not convert it')
         if kind in (MediaKind.VIDEO, MediaKind.VOICE):
+            duration, width, height = media_metadata(source, kind, duration, width, height)
             if type(duration) is not int or not 0 <= duration < 2**31:
                 raise ValueError('Voice/video duration must be a nonnegative integer in seconds')
         if kind == MediaKind.VOICE:
-            if not source.header.startswith(b'OggS') or b'OpusHead' not in source.header:
-                raise ValueError('Voice requires Ogg/Opus; renaming a file does not convert it')
             mime = 'audio/ogg'
             attributes.append({'_': 'documentAttributeAudio', 'voice': True, 'duration': duration})
         if kind == MediaKind.VIDEO:
@@ -192,6 +194,20 @@ class AccountMedia:
                 raise ValueError('Video requires a video MIME type')
             attributes.append({'_': 'documentAttributeVideo', 'duration': duration, 'w': width, 'h': height})
         return kind, mime, attributes
+
+    async def _inspect_options(self, source, kind, mime_type, duration, width, height):
+        # to_thread cannot stop a native probe on cancellation. Keep the local
+        # stream open until it finishes, then let the surrounding context close.
+        task = asyncio.create_task(asyncio.to_thread(
+            self._media_options, source, kind, mime_type, duration, width, height))
+        try:
+            return await asyncio.shield(task)
+        except asyncio.CancelledError:
+            try:
+                await task
+            except Exception:
+                pass
+            raise
 
     async def _part(self, owner, file_id, index, method, params):
         async with self.client._lock:
@@ -242,10 +258,10 @@ class AccountMedia:
             raise ValueError('Upload source changed; no message sent')
         return UploadedFile(file_id, parts, source.name, source.size, big, digest.hexdigest(), owner, source.header)
 
-    async def upload_file(self, file, *, peer='self', filename=None, progress=None):
+    async def upload_file(self, file, *, chat_id='self', filename=None, progress=None):
         owner = self._owner()
         with self._open(file, filename) as source:
-            resolved = await self.client.resolve_peer(peer)
+            resolved = await self.client.resolve_peer(chat_id)
             return await self._stage(source, resolved, owner, progress)
 
     @staticmethod
@@ -273,15 +289,15 @@ class AccountMedia:
                 lambda value: _correlate(value, peer, tokens, captions, reply_to, self.client._peers),
                 transport=transport)
 
-    async def send_file(self, peer, file, *, kind=MediaKind.DOCUMENT, filename=None, caption='',
+    async def send_file(self, chat_id, file, caption, *, kind=MediaKind.DOCUMENT, filename=None,
                         mime_type=None, duration=None, width=None, height=None, silent=False,
                         reply_to_msg_id=None, random_id=None, progress=None):
         self._send_options(caption, silent, reply_to_msg_id)
         tokens = operation_random_ids(1, None if random_id is None else [random_id])
         owner = self._owner()
         with self._open(file, filename) as source:
-            options = self._media_options(source, kind, mime_type, duration, width, height)
-            resolved = await self.client.resolve_peer(peer)
+            options = await self._inspect_options(source, kind, mime_type, duration, width, height)
+            resolved = await self.client.resolve_peer(chat_id)
             uploaded = await self._stage(source, resolved, owner, progress)
             params = dict(peer=resolved.to_input_peer(), media=self._input(uploaded, options),
                           message=caption, random_id=tokens[0], silent=silent, entities=[])
@@ -291,16 +307,17 @@ class AccountMedia:
                                       (caption,), reply_to_msg_id, role='upload')
             return result[0]
 
-    async def send_photo(self, peer, file, **kwargs):
-        return await self.send_file(peer, file, kind=MediaKind.PHOTO, **kwargs)
+    async def send_photo(self, chat_id, photo, caption, **kwargs):
+        return await self.send_file(chat_id, photo, caption, kind=MediaKind.PHOTO, **kwargs)
 
-    async def send_video(self, peer, file, *, duration, width, height, **kwargs):
-        return await self.send_file(peer, file, kind=MediaKind.VIDEO, duration=duration, width=width, height=height, **kwargs)
+    async def send_video(self, chat_id, video, caption, *, duration=None, width=None, height=None, **kwargs):
+        return await self.send_file(chat_id, video, caption, kind=MediaKind.VIDEO,
+                                    duration=duration, width=width, height=height, **kwargs)
 
-    async def send_voice(self, peer, file, *, duration, **kwargs):
-        return await self.send_file(peer, file, kind=MediaKind.VOICE, duration=duration, **kwargs)
+    async def send_voice(self, chat_id, voice, caption, *, duration=None, **kwargs):
+        return await self.send_file(chat_id, voice, caption, kind=MediaKind.VOICE, duration=duration, **kwargs)
 
-    async def send_album(self, peer, items, *, silent=False, reply_to_msg_id=None, random_ids=None):
+    async def send_album(self, chat_id, items, *, silent=False, reply_to_msg_id=None, random_ids=None):
         if not isinstance(items, (list, tuple)) or not 2 <= len(items) <= 10 or any(not isinstance(item, MediaItem) for item in items):
             raise ValueError('Album requires 2..10 MediaItem objects')
         self._send_options('', silent, reply_to_msg_id)
@@ -311,7 +328,8 @@ class AccountMedia:
             for item in items:
                 _caption(item.caption)
                 source = stack.enter_context(self._open(item.file, item.filename))
-                option = self._media_options(source, item.kind, item.mime_type, item.duration, item.width, item.height)
+                option = await self._inspect_options(source, item.kind,
+                    item.mime_type, item.duration, item.width, item.height)
                 if option[0] == MediaKind.VOICE:
                     raise ValueError('Voice is not supported in albums')
                 sources.append(source)
@@ -319,7 +337,7 @@ class AccountMedia:
             kinds = {option[0] for option in options}
             if MediaKind.DOCUMENT in kinds and len(kinds) != 1:
                 raise ValueError('Document albums cannot mix with photos/videos')
-            resolved = await self.client.resolve_peer(peer)
+            resolved = await self.client.resolve_peer(chat_id)
             multi = []
             for source, option, token, item in zip(sources, options, tokens, items):
                 uploaded = await self._stage(source, resolved, owner)
@@ -369,11 +387,11 @@ class AccountMedia:
                 except AccountRPCError as exc:
                     self._revoked(exc)
 
-    async def download_media(self, peer, message_id, destination, *, overwrite=False, max_size=MAX_FILE_SIZE):
+    async def download_media(self, chat_id, message_id, destination, *, overwrite=False, max_size=MAX_FILE_SIZE):
         if type(overwrite) is not bool or type(max_size) is not int or not 0 <= max_size <= MAX_FILE_SIZE:
             raise ValueError('Invalid download overwrite/size limit')
         owner = self._owner()
-        resolved = await self.client.resolve_peer(peer)
+        resolved = await self.client.resolve_peer(chat_id)
         message = await self.client.get_message(resolved, message_id)
         if message is None or message.media is None:
             raise UnsupportedOperationError('Message has no supported downloadable photo/document')

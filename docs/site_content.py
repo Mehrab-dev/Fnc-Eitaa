@@ -297,15 +297,14 @@ print(document.id, photo.id)'''),
         paragraph('`send_file` به‌صورت پیش‌فرض سند می‌فرستد؛ برای نمایش عکس از `send_photo` استفاده کن. مسیر محلی، bytes با filename، یا `UploadedFile` همان حساب در ارسال مستقیم پذیرفته می‌شود. کپشن حداکثر ۱۰۲۴ واحد UTF-16 است. سرور ممکن است عکس را بازفشرده کند؛ برابر نبودن هش عکس به‌تنهایی خطا نیست.',
                   '`send_file` sends a document by default; use `send_photo` for photo presentation. Direct sends accept a local path, bytes with a filename, or an `UploadedFile` from the same account. Captions allow up to 1024 UTF-16 units. The server may recompress photos, so a different photo hash alone is not a failure.'),
         heading('voice-video', 'ویس و ویدیو', 'Voice and video'),
-        code('Supply the real media metadata', '''voice = await client.send_voice(
-    "self", "voice.ogg", duration=4
+        code('Only chat_id, local media and caption are required', '''voice = await client.send_voice(
+    chat_id="self", voice="voice.ogg", caption="ویس"
 )
 video = await client.send_video(
-    "self", "clip.mp4", duration=2, width=464, height=848,
-    caption="ویدیو"
+    chat_id="self", video="clip.mp4", caption="ویدیو"
 )'''),
-        paragraph('مدت برحسب ثانیه و ابعاد برحسب پیکسل است؛ این‌ها را از فایل واقعی بگیر. کتابخانه مدت یا ابعاد را حدس نمی‌زند و تبدیل فرمت انجام نمی‌دهد. برای ویس از فایل Ogg/Opus مناسب و برای ویدیو از فایل قابل پخش در ایتا استفاده کن.',
-                  'Duration is in seconds and dimensions in pixels; supply values from the actual file. The library does not infer them or transcode media. Use an appropriate Ogg/Opus voice file and a video playable in Eitaa.'),
+        paragraph('فقط chat_id، مسیر رسانه و caption اجباری‌اند؛ برای ارسال بدون کپشن رشتهٔ خالی بده. duration و width و height اختیاری هستند و موارد تعیین‌نشده با PyAV از خود فایل خوانده می‌شوند. مدت برحسب ثانیه و رو به بالا گرد می‌شود. مقادیر صریح شما حفظ می‌شوند؛ اگر فایل قابل بررسی نباشد، قبل از آپلود خطا می‌گیرد. تبدیل فرمت انجام نمی‌شود؛ ویس باید Ogg/Opus باشد.',
+                  'Only chat_id, the media path and caption are required; use an empty string for no caption. Missing duration, width and height are inspected locally with PyAV. Duration is rounded up to seconds and explicit overrides are preserved. Unreadable metadata fails before uploading. No transcoding is performed; voice must be Ogg/Opus.'),
         heading('albums', 'آلبوم', 'Albums'),
         code('A two-photo album', '''from fnceitaa import MediaItem, MediaKind
 
@@ -327,14 +326,14 @@ print(downloaded.path, downloaded.size, downloaded.sha256)'''),
         note('خواندن قطعهٔ دانلود در خطای اتصال یا HTTP 5xx حداکثر سه بار با مکث ۱ و ۲ ثانیه تلاش می‌شود؛ RPC limit و HTTP 4xx تکرار نمی‌شوند. آپلود و ارسال پیام مشمول این رفتار نیستند.',
              'Download chunk reads allow up to three attempts for connection failures or HTTP 5xx, with 1- and 2-second delays. RPC limits and HTTP 4xx are not retried. Uploads and message writes are excluded.'),
         heading('upload-options', 'آپلود جداگانه و گزینه‌ها', 'Separate uploads and options'),
-        code('Reuse an uploaded file in the same client/account', '''uploaded = await client.upload_file("photo.jpg", peer="self")
+        code('Reuse an uploaded file in the same client/account', '''uploaded = await client.upload_file("photo.jpg", chat_id="self")
 message = await client.send_photo("self", uploaded, caption="آپلود قبلی")
 
 def progress(done, total):
     print(done, total)
 
 message = await client.send_file(
-    "self", "report.pdf", progress=progress,
+    "self", "report.pdf", caption="", progress=progress,
     reply_to_msg_id=123, silent=False
 )'''),
         note('آپلود و ارسال خودکار retry ندارند. ادامهٔ پایدار آپلود نیمه‌تمام، تبدیل فرمت و مهاجرت CDN/DC پیاده نشده‌اند. سقف محلی کد ۴۰۰۰ قطعهٔ ۵۱۲ KiB است؛ پشتیبانی واقعی فایل بزرگ هنوز تأیید نشده است.',

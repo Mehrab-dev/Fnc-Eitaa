@@ -66,40 +66,40 @@ class AccountQueue:
         self._check()
         return resolved
 
-    async def enqueue_message(self, peer, text, *, key=None, reply_to_msg_id=None, silent=False, no_webpage=False):
+    async def enqueue_message(self, chat_id, text, *, key=None, reply_to_msg_id=None, silent=False, no_webpage=False):
         validate_text(text)
         if reply_to_msg_id is not None and not message_id(reply_to_msg_id):
             raise ValueError('Invalid reply_to_msg_id')
         if type(silent) is not bool or type(no_webpage) is not bool:
             raise ValueError('silent and no_webpage must be bool')
-        resolved = await self._resolve(peer)
+        resolved = await self._resolve(chat_id)
         return self.store.enqueue('send_message', dict(peer=_peer_data(resolved), text=text,
             reply_to_msg_id=reply_to_msg_id, silent=silent, no_webpage=no_webpage,
             random_id=operation_random_ids(1, None)[0]), key=key)
 
-    async def enqueue_edit(self, peer, message_id, text, *, key=None, no_webpage=False):
+    async def enqueue_edit(self, chat_id, message_id, text, *, key=None, no_webpage=False):
         validate_ids([message_id])
         validate_text(text)
         if type(no_webpage) is not bool:
             raise ValueError('no_webpage must be bool')
-        resolved = await self._resolve(peer)
+        resolved = await self._resolve(chat_id)
         return self.store.enqueue('edit_message', dict(peer=_peer_data(resolved), message_id=message_id,
                                                       text=text, no_webpage=no_webpage), key=key)
 
-    async def enqueue_delete(self, peer, message_ids, *, key=None, revoke=False):
+    async def enqueue_delete(self, chat_id, message_ids, *, key=None, revoke=False):
         identifiers = validate_ids(message_ids)
         if type(revoke) is not bool:
             raise ValueError('revoke must be bool')
-        resolved = await self._resolve(peer)
+        resolved = await self._resolve(chat_id)
         if resolved.kind == PeerKind.CHANNEL and not revoke:
             raise ValueError('Channel deletion requires explicit revoke=True')
         return self.store.enqueue('delete_messages', dict(peer=_peer_data(resolved), message_ids=identifiers, revoke=revoke), key=key)
 
-    async def enqueue_forward(self, to_peer, from_peer, message_ids, *, key=None, copy=False, silent=False):
+    async def enqueue_forward(self, chat_id, from_chat_id, message_ids, *, key=None, copy=False, silent=False):
         identifiers = validate_ids(message_ids)
         if type(copy) is not bool or type(silent) is not bool or (copy and len(identifiers) != 1):
             raise ValueError('Copy supports one message; copy and silent must be bool')
-        source, destination = await self._resolve(from_peer), await self._resolve(to_peer)
+        source, destination = await self._resolve(from_chat_id), await self._resolve(chat_id)
         return self.store.enqueue('copy_message' if copy else 'forward_messages', dict(
             peer=_peer_data(destination), from_peer=_peer_data(source), message_ids=identifiers,
             silent=silent, random_ids=operation_random_ids(len(identifiers), None)), key=key)
@@ -119,19 +119,19 @@ class AccountQueue:
                 raise ValueError('Media file changed while queued')
             return dict(path=str(path), size=source.size, sha256=digest.hexdigest())
 
-    async def enqueue_file(self, peer, file, *, key=None, kind=MediaKind.DOCUMENT, filename=None, caption='',
+    async def enqueue_file(self, chat_id, file, *, key=None, kind=MediaKind.DOCUMENT, filename=None, caption='',
                            mime_type=None, duration=None, width=None, height=None, silent=False, reply_to_msg_id=None):
         self._check()
         self.client.media()._send_options(caption, silent, reply_to_msg_id)
         options = dict(kind=MediaKind(kind).value, filename=filename, caption=caption, mime_type=mime_type,
                        duration=duration, width=width, height=height, silent=silent, reply_to_msg_id=reply_to_msg_id)
-        file_info = self._file_snapshot(file, filename=filename, kind=kind, mime_type=mime_type,
-                                        duration=duration, width=width, height=height)
-        resolved = await self._resolve(peer)
+        file_info = await asyncio.to_thread(self._file_snapshot, file, filename=filename,
+            kind=kind, mime_type=mime_type, duration=duration, width=width, height=height)
+        resolved = await self._resolve(chat_id)
         return self.store.enqueue('send_file', dict(peer=_peer_data(resolved), file=file_info,
             options=options, random_id=operation_random_ids(1, None)[0]), key=key)
 
-    async def enqueue_album(self, peer, items, *, key=None, silent=False, reply_to_msg_id=None):
+    async def enqueue_album(self, chat_id, items, *, key=None, silent=False, reply_to_msg_id=None):
         self._check()
         self.client.media()._send_options('', silent, reply_to_msg_id)
         if not isinstance(items, (tuple, list)) or not 2 <= len(items) <= 10 or any(not isinstance(i, MediaItem) for i in items):
@@ -143,13 +143,13 @@ class AccountQueue:
                 raise ValueError('Voice is unsupported in albums')
             self.client.media()._send_options(item.caption, silent, reply_to_msg_id)
             options = {key: value for key, value in asdict(item).items() if key != 'file'}
-            snapshot = self._file_snapshot(item.file, filename=item.filename, kind=kind, mime_type=item.mime_type,
-                                           duration=item.duration, width=item.width, height=item.height)
+            snapshot = await asyncio.to_thread(self._file_snapshot, item.file, filename=item.filename,
+                kind=kind, mime_type=item.mime_type, duration=item.duration, width=item.width, height=item.height)
             packed.append(dict(file=snapshot, options=options))
             kinds.add(kind)
         if MediaKind.DOCUMENT in kinds and len(kinds) != 1:
             raise ValueError('Document albums cannot mix with photo/video')
-        resolved = await self._resolve(peer)
+        resolved = await self._resolve(chat_id)
         return self.store.enqueue('send_album', dict(peer=_peer_data(resolved), items=packed, silent=silent,
             reply_to_msg_id=reply_to_msg_id, random_ids=operation_random_ids(len(items), None)), key=key)
 
@@ -200,7 +200,7 @@ class AccountQueue:
         if job is None:
             return None
         try:
-            self._validate_files(job)
+            await asyncio.to_thread(self._validate_files, job)
             self._check()
         except (ValueError, OSError, QueueError, AuthenticationError) as exc:
             return self.store.finish_job(job, 'failed', error=type(exc).__name__)

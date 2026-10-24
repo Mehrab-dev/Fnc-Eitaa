@@ -228,9 +228,9 @@ class AccountUpdates:
                     len(value['seen']), len(value['known']), len(value['channels']))
         self._checkpoint = value
 
-    async def watch_channel(self, peer):
+    async def watch_channel(self, chat_id):
         """Persist a current baseline once; an existing cursor is never reset."""
-        resolved = await self.client.resolve_peer(peer)
+        resolved = await self.client.resolve_peer(chat_id)
         if resolved.kind != PeerKind.CHANNEL:
             raise ValueError('watch_channel requires a channel or megagroup')
         resolved.to_input_peer()

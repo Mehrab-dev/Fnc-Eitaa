@@ -55,7 +55,7 @@ class UploadedFile:
 
 @dataclass(frozen=True)
 class MediaItem:
-    """An album item. Video metadata is supplied by the caller, never invented."""
+    """An album item. Missing video metadata is read from its local file."""
     file: str | Path | bytes = field(repr=False)
     kind: MediaKind = MediaKind.PHOTO
     caption: str = field(default='', repr=False)

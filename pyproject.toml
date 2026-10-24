@@ -4,15 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fnceitaa"
-version = "0.1.0"
+version = "0.2.0"
 description = "Async Eitaa toolkit with experimental account protocol support"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "av>=16,<20",
     "requests>=2.31,<3", "beautifulsoup4>=4.12,<5",
     "cryptography>=43; platform_system != 'Windows'",
     "keyring>=25; platform_system != 'Windows'",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "build>=1", "ruff>=0.9"]
 
 [tool.setuptools.packages.find]
 include = ["fnceitaa*"]

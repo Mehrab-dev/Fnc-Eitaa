@@ -33,7 +33,7 @@ class Message:
         if not self._client:
             raise RuntimeError("Client is not bound to message instance")
         return await self._client.send_message(
-            peer=self.peer,
+            chat_id=self.peer,
             text=text,
             reply_to_msg_id=self.id
         )
@@ -42,7 +42,7 @@ class Message:
         if not self._client:
             raise RuntimeError("Client is not bound to message instance")
         return await self._client.delete_messages(
-            peer=self.peer,
+            chat_id=self.peer,
             message_ids=[self.id]
         )
 

@@ -280,20 +280,20 @@ class AccountProfiles:
         if len({member.peer.key for member in members}) != len(members):
             raise TLCodecError('Duplicate participants in response')
 
-    async def get_chat_info(self, peer) -> AccountUserFull | AccountChatFull:
-        return (await self._full(peer))[0]
+    async def get_chat_info(self, chat_id) -> AccountUserFull | AccountChatFull:
+        return (await self._full(chat_id))[0]
 
-    async def get_full_user(self, peer='self') -> AccountUserFull:
-        return cast(AccountUserFull, (await self._full(peer, kind=PeerKind.USER))[0])
+    async def get_full_user(self, chat_id='self') -> AccountUserFull:
+        return cast(AccountUserFull, (await self._full(chat_id, kind=PeerKind.USER))[0])
 
-    async def get_full_group(self, peer) -> AccountChatFull:
-        return cast(AccountChatFull, (await self._full(peer, group=True))[0])
+    async def get_full_group(self, chat_id) -> AccountChatFull:
+        return cast(AccountChatFull, (await self._full(chat_id, group=True))[0])
 
-    async def get_full_channel(self, peer) -> AccountChatFull:
-        return cast(AccountChatFull, (await self._full(peer, kind=PeerKind.CHANNEL))[0])
+    async def get_full_channel(self, chat_id) -> AccountChatFull:
+        return cast(AccountChatFull, (await self._full(chat_id, kind=PeerKind.CHANNEL))[0])
 
-    async def get_member_count(self, peer) -> int | None:
-        info = await self.get_chat_info(peer)
+    async def get_member_count(self, chat_id) -> int | None:
+        info = await self.get_chat_info(chat_id)
         if isinstance(info, AccountUserFull):
             raise ValueError('A user has no member count')
         return info.member_count
@@ -316,10 +316,10 @@ class AccountProfiles:
             result['q'] = query
         return result
 
-    async def get_members_page(self, peer, *, offset=0, limit=100, filter='recent', query='') -> MemberPage:
+    async def get_members_page(self, chat_id, *, offset=0, limit=100, filter='recent', query='') -> MemberPage:
         selector = self._page_options(offset, limit, filter, query)
         owner = self._owner()
-        resolved = await self.client.resolve_peer(peer)
+        resolved = await self.client.resolve_peer(chat_id)
         if resolved.kind == PeerKind.USER:
             raise ValueError('A user has no member list')
         if resolved.kind == PeerKind.CHAT:
@@ -355,12 +355,12 @@ class AccountProfiles:
         next_offset = following if selected and following < total else None
         return MemberPage(resolved, selected, total, next_offset, filter, query)
 
-    async def iter_members(self, peer, *, limit=100, page_size=100, filter='recent', query=''):
+    async def iter_members(self, chat_id, *, limit=100, page_size=100, filter='recent', query=''):
         self._page_options(0, page_size, filter, query)
         if type(limit) is not int or not 1 <= limit <= 10000:
             raise ValueError('Use a total member limit of 1..10000')
         owner = self._owner()
-        resolved = await self.client.resolve_peer(peer)
+        resolved = await self.client.resolve_peer(chat_id)
         seen, offset = set(), 0
         while len(seen) < limit:
             self._check(owner)
@@ -378,9 +378,9 @@ class AccountProfiles:
                 raise TLCodecError('Member pagination failed to advance')
             offset = page.next_offset
 
-    async def get_member(self, peer, participant='self') -> AccountMember | None:
+    async def get_member(self, chat_id, participant='self') -> AccountMember | None:
         owner = self._owner()
-        resolved = await self.client.resolve_peer(peer)
+        resolved = await self.client.resolve_peer(chat_id)
         target = await self.client.resolve_peer(participant)
         if resolved.kind == PeerKind.USER:
             raise ValueError('A user has no members')

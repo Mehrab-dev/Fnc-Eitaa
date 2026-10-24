@@ -69,7 +69,7 @@ def main():
     parser.add_argument('--reply-to', type=int)
     parser.add_argument('--kind', choices=('photo', 'video', 'document'), default='photo', help='Album item kind')
     parser.add_argument('--mime-type')
-    parser.add_argument('--duration', type=int, help='Actual voice/video duration in seconds')
+    parser.add_argument('--duration', type=int, help='Optional duration override in seconds; otherwise read from the local file')
     parser.add_argument('--width', type=int)
     parser.add_argument('--height', type=int)
     parser.add_argument('--message-id', type=int)

@@ -17,15 +17,16 @@
 
 | متد | کاربرد |
 | --- | --- |
-| `upload_file(file, *, peer='self', filename=None, progress=None)` | فقط آپلود؛ خروجی `UploadedFile`؛ هیچ پیام چتی نمی‌فرستد |
-| `send_file(peer, file, **options)` | ارسال سند؛ خروجی `AccountMessage` |
-| `send_photo(peer, file, **options)` | ارسال عکس JPEG/PNG |
-| `send_video(peer, file, *, duration, width, height, **options)` | ارسال ویدیو با مشخصات واقعی فایل |
-| `send_voice(peer, file, *, duration, **options)` | ارسال ویس Ogg/Opus |
-| `send_album(peer, items, *, random_ids=None, silent=False, reply_to_msg_id=None)` | ارسال ۲ تا ۱۰ مورد `MediaItem`؛ خروجی tuple از پیام‌ها به ترتیب ورودی |
-| `download_media(peer, message_id, destination, *, overwrite=False, max_size=...)` | دانلود به مسیر صریح؛ خروجی `DownloadedFile(path, size, sha256)` |
+| `upload_file(file, *, chat_id='self', filename=None, progress=None)` | فقط آپلود؛ خروجی `UploadedFile`؛ هیچ پیام چتی نمی‌فرستد |
+| `send_file(chat_id, file, caption, **options)` | ارسال سند؛ خروجی `AccountMessage` |
+| `send_photo(chat_id, photo, caption, **options)` | ارسال عکس JPEG/PNG |
+| `send_video(chat_id, video, caption, *, duration=None, width=None, height=None, **options)` | مشخصات تعیین‌نشده از خود فایل خوانده می‌شوند |
+| `send_voice(chat_id, voice, caption, *, duration=None, **options)` | ارسال ویس Ogg/Opus با خواندن خودکار مدت |
+| `send_album(chat_id, items, *, random_ids=None, silent=False, reply_to_msg_id=None)` | ارسال ۲ تا ۱۰ مورد `MediaItem`؛ خروجی tuple از پیام‌ها به ترتیب ورودی |
+| `download_media(chat_id, message_id, destination, *, overwrite=False, max_size=...)` | دانلود به مسیر صریح؛ خروجی `DownloadedFile(path, size, sha256)` |
 
-گزینه‌های مشترک ارسال تکی: `filename`، `caption`، `silent`، `reply_to_msg_id`،
+در ارسال تکی `chat_id`، فایل و `caption` اجباری‌اند؛ برای بدون کپشن `""` بدهید.
+گزینه‌های اختیاری مشترک ارسال تکی: `filename`، `silent`، `reply_to_msg_id`،
 `random_id` و `progress`. `mime_type` برای سند/ویدیو قابل تعیین است. `send_file`
 پارامتر `kind` نیز می‌پذیرد، ولی متدهای تخصصی خواناترند. کپشن تا ۱۰۲۴ واحد UTF-16
 و متن ساده است. کالبک `progress(sent_bytes, total_bytes)` می‌تواند sync یا async
@@ -37,13 +38,13 @@ from fnceitaa import AccountClient, MediaItem
 
 async def use_media():
     async with AccountClient('account.eitaa') as client:
-        message = await client.send_file('self', Path('examples/media_sample.txt'))
+        message = await client.send_file('self', Path('examples/media_sample.txt'), caption='')
         downloaded = await client.download_media('self', message.id, 'downloaded_sample.txt')
         print(downloaded.size, downloaded.sha256)
         # هر دستور زیر یک ارسال جداست؛ فقط مورد موردنیاز را اجرا کنید.
         await client.send_photo('self', 'photo.jpg', caption='توضیح عکس')
-        await client.send_voice('self', 'voice.ogg', duration=3)
-        await client.send_video('self', 'clip.mp4', duration=5, width=640, height=360)
+        await client.send_voice(chat_id='self', voice='voice.ogg', caption='ویس')
+        await client.send_video(chat_id='self', video='clip.mp4', caption='ویدیو')
         await client.send_album('self', [MediaItem('one.jpg'), MediaItem('two.jpg')])
 ```
 
@@ -68,9 +69,11 @@ async def use_media():
   اندپوینت HTTPS مجاز ایتا را دارد. پیش‌فرض‌های role از worker پین‌شده‌اند؛ مهاجرت
   خودکار DC، انتخاب تصادفی میزبان و دریافت redirectهای CDN پیاده نشده است.
 - عکس فقط با امضای JPEG/PNG پذیرفته می‌شود. اعتبارسنجی امضا معادل decode کامل عکس
-  نیست. ویس باید واقعاً Ogg/Opus باشد؛ تغییر پسوند کافی نیست. تبدیل فرمت، استخراج
-  خودکار مدت/ابعاد، تولید waveform یا thumbnail و اجرای FFmpeg انجام نمی‌شود.
-  مدت ویس/ویدیو به ثانیهٔ صحیح و ابعاد واقعی ویدیو را برنامهٔ فراخوان می‌دهد.
+  نیست. ویس باید واقعاً Ogg/Opus باشد؛ تغییر پسوند کافی نیست. PyAV مشخصات مدت و
+  ابعاد تعیین‌نشده را از فایل محلی می‌خواند؛ این کار خارج از حلقهٔ async است.
+  تبدیل فرمت و تولید waveform یا thumbnail انجام نمی‌شود. بازنویسی صریح مدت و
+  ابعاد اختیاری است. برای `UploadedFile` ویس/ویدیو باید مشخصات را صریح بدهید یا
+  مسیر اصلی فایل را برای بررسی خودکار استفاده کنید.
 - آلبوم می‌تواند عکس/ویدیو یا فقط سند باشد؛ ویس و ترکیب سند با عکس/ویدیو رد می‌شود.
   هر فایل ابتدا با `messages.uploadMedia` آماده می‌شود و یک درخواست نهایی
   `messages.sendMultiMedia` پیام‌ها را می‌فرستد. شکست آماده‌سازی، پیام چتی نمی‌فرستد؛
