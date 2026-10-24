@@ -22,7 +22,7 @@
 | `send_photo(chat_id, photo, caption, **options)` | ارسال عکس JPEG/PNG |
 | `send_video(chat_id, video, caption, *, duration=None, width=None, height=None, **options)` | مشخصات تعیین‌نشده از خود فایل خوانده می‌شوند |
 | `send_voice(chat_id, voice, caption, *, duration=None, **options)` | ارسال ویس Ogg/Opus با خواندن خودکار مدت |
-| `send_album(chat_id, items, *, random_ids=None, silent=False, reply_to_msg_id=None)` | ارسال ۲ تا ۱۰ مورد `MediaItem`؛ خروجی tuple از پیام‌ها به ترتیب ورودی |
+| `send_album(chat_id, items, caption=None, *, random_ids=None, silent=False, reply_to_msg_id=None)` | ارسال ۲ تا ۱۰ مورد `MediaItem`؛ کپشن مشترک روی عضو اول؛ خروجی tuple از پیام‌ها به ترتیب ورودی |
 | `download_media(chat_id, message_id, destination, *, overwrite=False, max_size=...)` | دانلود به مسیر صریح؛ خروجی `DownloadedFile(path, size, sha256)` |
 
 در ارسال تکی `chat_id`، فایل و `caption` اجباری‌اند؛ برای بدون کپشن `""` بدهید.
@@ -45,8 +45,13 @@ async def use_media():
         await client.send_photo('self', 'photo.jpg', caption='توضیح عکس')
         await client.send_voice(chat_id='self', voice='voice.ogg', caption='ویس')
         await client.send_video(chat_id='self', video='clip.mp4', caption='ویدیو')
-        await client.send_album('self', [MediaItem('one.jpg'), MediaItem('two.jpg')])
+        await client.send_album('self', [MediaItem('one.jpg'), MediaItem('two.jpg')], caption='کپشن آلبوم')
 ```
+
+کپشن سطح آلبوم اختیاری است. `caption=None` کپشن هر عضو را حفظ می‌کند؛ مقدار
+رشته‌ای فقط کپشن عضو اول را جایگزین می‌کند و رشتهٔ خالی آن را پاک می‌کند.
+کپشن سایر اعضا و اشیای ورودی تغییر نمی‌کنند. `enqueue_album` نیز همین رفتار را
+دارد و کپشن را در صف پایدار ذخیره می‌کند. سقف کپشن ۱۰۲۴ واحد UTF-16 است.
 
 خروجی `get_message` و history در صورت پشتیبانی از نوع مدیا، `message.media` دارد:
 نوع، اندازه، MIME، نام اصلی سند، ابعاد/مدت و شناسهٔ فایل. `grouped_id` شناسهٔ گروه

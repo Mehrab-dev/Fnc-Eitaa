@@ -309,13 +309,13 @@ video = await client.send_video(
         code('A two-photo album', '''from fnceitaa import MediaItem, MediaKind
 
 messages = await client.send_album("self", [
-    MediaItem("first.jpg", kind=MediaKind.PHOTO, caption="آلبوم من"),
+    MediaItem("first.jpg", kind=MediaKind.PHOTO),
     MediaItem("second.jpg", kind=MediaKind.PHOTO),
-])
+], caption="آلبوم من")
 for message in messages:
     print(message.id, message.grouped_id)'''),
-        paragraph('آلبوم ۲ تا ۱۰ عضو دارد. هر `MediaItem` کپشن و مشخصات خودش را دارد. موارد قبل از ارسال نهایی آپلود می‌شوند؛ تأیید ناقص شناسه‌ها نتیجه را نامعلوم می‌کند. آلبوم دو عکس در حساب واقعی بررسی شده است؛ انواع دیگر هنوز تأیید زنده ندارند.',
-                  'An album contains 2–10 items. Each `MediaItem` has its own caption and metadata. Items are uploaded before the final send; incomplete ID correlation leaves the outcome uncertain. A two-photo album was verified live; other album types remain unverified live.'),
+        paragraph('آلبوم ۲ تا ۱۰ عضو دارد. caption سطح آلبوم اختیاری است: None کپشن‌های اعضا را حفظ می‌کند و رشته فقط کپشن عضو اول را جایگزین می‌کند؛ رشتهٔ خالی آن را پاک می‌کند. کپشن دیگر اعضا و اشیای ورودی تغییر نمی‌کنند. enqueue_album هم این ورودی را دارد. موارد قبل از ارسال نهایی آپلود می‌شوند؛ تأیید ناقص شناسه‌ها نتیجه را نامعلوم می‌کند. آلبوم دو عکس در حساب واقعی بررسی شده است؛ انواع دیگر هنوز تأیید زنده ندارند.',
+                  'An album contains 2–10 items. Its optional caption preserves per-item captions when None, or replaces only the first caption when a string (including an empty string). Other captions and input objects are unchanged. enqueue_album supports the same argument. Items are staged before the final send; incomplete ID correlation leaves the outcome uncertain. A two-photo album was verified live; other album types remain unverified live.'),
         heading('downloads', 'دانلود و بررسی محتوا', 'Download and verify'),
         code('Choose the destination path explicitly', '''downloaded = await client.download_media(
     "self", document.id, "downloads/report.pdf"

@@ -188,8 +188,9 @@ class AccountClient:
             filename=filename, silent=silent, reply_to_msg_id=reply_to_msg_id,
             random_id=random_id, progress=progress)
 
-    async def send_album(self, chat_id, items, *, silent=False, reply_to_msg_id=None, random_ids=None):
-        return await self.media().send_album(chat_id, items, silent=silent,
+    async def send_album(self, chat_id, items, caption=None, *, silent=False, reply_to_msg_id=None, random_ids=None):
+        """Send an album; caption overrides the first item's caption when supplied."""
+        return await self.media().send_album(chat_id, items, caption=caption, silent=silent,
             reply_to_msg_id=reply_to_msg_id, random_ids=random_ids)
 
     async def download_media(self, chat_id, message_id, destination, **kwargs):

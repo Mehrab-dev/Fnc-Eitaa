@@ -131,11 +131,10 @@ class AccountQueue:
         return self.store.enqueue('send_file', dict(peer=_peer_data(resolved), file=file_info,
             options=options, random_id=operation_random_ids(1, None)[0]), key=key)
 
-    async def enqueue_album(self, chat_id, items, *, key=None, silent=False, reply_to_msg_id=None):
+    async def enqueue_album(self, chat_id, items, caption=None, *, key=None, silent=False, reply_to_msg_id=None):
         self._check()
         self.client.media()._send_options('', silent, reply_to_msg_id)
-        if not isinstance(items, (tuple, list)) or not 2 <= len(items) <= 10 or any(not isinstance(i, MediaItem) for i in items):
-            raise ValueError('Album requires 2..10 MediaItem objects')
+        items = self.client.media()._album_items(items, caption)
         packed, kinds = [], set()
         for item in items:
             kind = MediaKind(item.kind)

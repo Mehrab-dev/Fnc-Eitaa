@@ -224,6 +224,66 @@ def test_mixed_album_reads_video_metadata_without_required_dimensions(account,fi
     assert [m['message'] for m in final['multi_media']]==['album','video']
 
 
+@pytest.mark.parametrize('helper',[False,True])
+@pytest.mark.parametrize('caption',[None,'','کپشن مشترک آلبوم'])
+def test_album_caption_applies_only_to_first_item_without_mutating_items(account,files,helper,caption):
+    client,rpc=account
+    items=[MediaItem(files['photo'],caption='original first'),
+           MediaItem(files['video'],kind=MediaKind.VIDEO,caption='second caption')]
+    sender=client.media() if helper else client
+    result=asyncio.run(sender.send_album(chat_id='self',items=items,caption=caption,
+        reply_to_msg_id=23,silent=True,random_ids=[501,502]))
+    expected=['original first' if caption is None else caption,'second caption']
+    final=next(p for n,p in rpc.calls if n=='messages.sendMultiMedia')
+    assert [item['message'] for item in final['multi_media']]==expected
+    assert [item['random_id'] for item in final['multi_media']]==[501,502]
+    assert final['reply_to_msg_id']==23 and final['silent'] is True
+    assert [message.text for message in result]==expected
+    assert [item.caption for item in items]==['original first','second caption']
+
+
+def test_queued_album_caption_survives_queue_reopen_and_dispatch(account,files,tmp_path):
+    client,rpc=account
+    items=[MediaItem(files['photo'],caption='original'),MediaItem(files['photo'])]
+    async def scenario():
+        path=tmp_path/'album.queue.sqlite3'
+        with client.queue(path) as queue:
+            job=await queue.enqueue_album('self',items,'کپشن صف',reply_to_msg_id=23)
+            assert job.request['items'][0]['options']['caption']=='کپشن صف'
+        with client.queue(path) as reopened:
+            confirmed=await reopened.dispatch_one(job.id)
+            assert confirmed.state=='confirmed' and confirmed.receipt['message_ids']==[101,102]
+    asyncio.run(scenario())
+    final=next(p for n,p in rpc.calls if n=='messages.sendMultiMedia')
+    assert [item['message'] for item in final['multi_media']]==['کپشن صف','']
+    assert final['reply_to_msg_id']==23 and items[0].caption=='original'
+
+
+@pytest.mark.parametrize('caption',[123,True,[], 'a'*1025,'😀'*513,'\ud800'])
+@pytest.mark.parametrize('queued',[False,True])
+def test_invalid_album_caption_fails_before_upload_or_queue_registration(account,files,tmp_path,caption,queued):
+    client,rpc=account
+    items=[MediaItem(files['photo']),MediaItem(files['photo'])]
+    async def scenario():
+        if queued:
+            with client.queue(tmp_path/'invalid.queue.sqlite3') as queue:
+                with pytest.raises(ValueError):
+                    await queue.enqueue_album('self',items,caption=caption)
+                assert queue.store.list_jobs()==()
+        else:
+            with pytest.raises(ValueError):
+                await client.send_album('self',items,caption=caption)
+    asyncio.run(scenario())
+    assert rpc.calls==[]
+
+
+def test_album_caption_accepts_utf16_boundary_and_positional_caption(account,files):
+    caption='😀'*512
+    asyncio.run(account[0].send_album('self',[MediaItem(files['photo']),MediaItem(files['photo'])],caption))
+    final=next(p for n,p in account[1].calls if n=='messages.sendMultiMedia')
+    assert [item['message'] for item in final['multi_media']]==[caption,'']
+
+
 def test_uploaded_video_can_reuse_explicit_metadata(account,files):
     client,rpc=account
     async def scenario():

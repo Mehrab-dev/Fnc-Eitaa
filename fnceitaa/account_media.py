@@ -317,16 +317,27 @@ class AccountMedia:
     async def send_voice(self, chat_id, voice, caption, *, duration=None, **kwargs):
         return await self.send_file(chat_id, voice, caption, kind=MediaKind.VOICE, duration=duration, **kwargs)
 
-    async def send_album(self, chat_id, items, *, silent=False, reply_to_msg_id=None, random_ids=None):
+    @staticmethod
+    def _album_items(items, caption=None):
         if not isinstance(items, (list, tuple)) or not 2 <= len(items) <= 10 or any(not isinstance(item, MediaItem) for item in items):
             raise ValueError('Album requires 2..10 MediaItem objects')
+        items = tuple(items)
+        if caption is not None:
+            _caption(caption)
+            items = (replace(items[0], caption=caption), *items[1:])
+        for item in items:
+            _caption(item.caption)
+        return items
+
+    async def send_album(self, chat_id, items, caption=None, *, silent=False, reply_to_msg_id=None, random_ids=None):
+        """Use caption on the first item only; None preserves per-item captions."""
+        items = self._album_items(items, caption)
         self._send_options('', silent, reply_to_msg_id)
         tokens = operation_random_ids(len(items), random_ids)
         owner = self._owner()
         with ExitStack() as stack:
             sources, options = [], []
             for item in items:
-                _caption(item.caption)
                 source = stack.enter_context(self._open(item.file, item.filename))
                 option = await self._inspect_options(source, item.kind,
                     item.mime_type, item.duration, item.width, item.height)
